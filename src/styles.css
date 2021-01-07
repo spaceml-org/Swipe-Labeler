@@ -1,0 +1,47 @@
+html > body {
+    font-family: "Cairo", sans-serif;
+  }
+  
+  html,
+  #root,
+  body {
+    height: 100%;
+  }
+  
+  body {
+    margin: 0px;
+  }
+  
+  .App {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    text-align: center;
+  }
+
+
+  .Swipe_screen {
+    width: 100%;
+    
+  }
+  
+  .Question{
+    width: 100%;
+  }
+
+  .Image_wrapper{
+    width: 100%;
+  }
+
+  .Swipe_screen img {
+      width: 500px;
+  }
+
+  .AcceptRejectButton{
+    margin:30px;
+  }
+
+
+
+
+

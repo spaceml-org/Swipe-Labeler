@@ -1,25 +1,169 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./styles.css";
+import TinderCard from "react-tinder-card";
+import { Button } from "@blueprintjs/core";
+import "normalize.css";
+import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+import "@blueprintjs/core/lib/css/blueprint.css";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends React.Component {
+  // Main component
+  constructor(props) {
+    super(props);
+    this.state = {
+      index: 0,
+      images: null,
+      batch_size: null,
+    };
+
+    // bind functions
+    this.fetchImages = this.fetchImages.bind(this);
+    this.sendSelection = this.sendSelection.bind(this);
+    this.onAcceptClick = this.onAcceptClick.bind(this);
+    this.onRejectClick = this.onRejectClick.bind(this);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // When the index gets updated, show the next image.
+    if (
+      prevState.index !== this.state.index &&
+      this.state.index === this.state.batch_size
+    )
+      this.fetchImages();
+  }
+
+  componentDidMount() {
+    // When the app loads, get all the image urls from flask.
+    this.fetchImages();
+  }
+
+  fetchImages() {
+    // Collect the list of image urls to request one by one later.
+    fetch("/images")
+      .then((res) => res.json())
+      .then((data) => {
+        this.setState({
+          images: data.images,
+          batch_size: data.images.length,
+        });
+      });
+  }
+
+  sendSelection(value) {
+    // When the user swipes, clicks, or presses a choice (accept or reject),
+    // that choice gets sent to flask.
+    fetch("/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        image_url: this.state.images[this.state.index],
+        value: value,
+      }),
+    });
+  }
+
+  onAcceptClick() {
+    // Send the positive label to flask,
+    // and update the index so the next image will show.
+    this.sendSelection(1);
+    this.setState({
+      index: this.state.index + 1,
+    });
+  }
+
+  onRejectClick() {
+    // Send the negative label to flask,
+    // and update the index so the next image will show.
+    this.sendSelection(0);
+    this.setState({
+      index: this.state.index + 1,
+    });
+  }
+
+  render() {
+    return (
+      <div className="App">
+        {this.state.images ? (
+          <Swipe_screen
+            index={this.state.index}
+            image={this.state.images[this.state.index]}
+            onAcceptClick={this.onAcceptClick}
+            onRejectClick={this.onRejectClick}
+          />
+        ) : (
+          <Button loading={true} />
+        )}
+      </div>
+    );
+  }
 }
 
-export default App;
+class Swipe_screen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+
+    this.onSwipe = this.onSwipe.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
+  }
+  componentWillMount() {
+    // Listens for the keyboard key press events. (Uses "keyup" so the button is only pressed once per choice.)
+    document.addEventListener("keyup", this.onKeyPress, false);
+  }
+
+  componentWillUnmount() {
+    // Removes the key press event listener if this component is replaced by another component or view.
+    // (Currently there are no other components to replace this view, however.)
+    document.removeEventListener("keyup", this.onKeyPress);
+  }
+
+  onSwipe = (direction) => {
+    // From TinderCard
+    if (direction === "right") {
+      this.props.onAcceptClick();
+    } else if (direction === "left") {
+      this.props.onRejectClick();
+    }
+  };
+
+  onKeyPress = (event) => {
+    // Key press alternatives
+    if (event.key == "ArrowRight") {
+      this.props.onAcceptClick();
+    } else if (event.key === "ArrowLeft") {
+      this.props.onRejectClick();
+    }
+  };
+
+  render() {
+    return (
+      <div className="Swipe_screen">
+        <div className="Question">
+          <div className="Image_wrapper">
+            <TinderCard onSwipe={this.onSwipe} preventSwipe={["right", "left"]}>
+              <img src={this.props.image} />
+            </TinderCard>
+          </div>
+
+          <Button
+            icon="small-cross"
+            className="AcceptRejectButton"
+            intent="primary"
+            onClick={this.props.onRejectClick}
+          >
+            Reject
+          </Button>
+
+          <Button
+            icon="tick"
+            className="AcceptRejectButton"
+            intent="success"
+            onClick={this.props.onAcceptClick}
+          >
+            Accept
+          </Button>
+        </div>
+      </div>
+    );
+  }
+}
