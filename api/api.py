@@ -6,6 +6,7 @@ import shutil
 from flask import Flask, request, send_from_directory
 
 
+
 app = Flask(__name__)
 
 
@@ -15,6 +16,7 @@ unlabeled_directory = 'SPACEML_IMAGES_DIR'
 positive_directory = 'SPACEML_POS_DIR'
 negative_directory = 'SPACEML_NEG_DIR'
 
+# @app.route('/')
 
 @app.route('/images')
 def list_image_urls():
@@ -61,3 +63,7 @@ def submit_label():
         shutil.move(old_path_string, neg_path_string)
 
     return {'status': 'success'}
+
+
+if __name__=="__main__":
+    app.run()

@@ -58,5 +58,5 @@ Run these two commands in two different terminal shells opened to the project's 
 
 1. `npm start`
 
-2. (In a separate terminal shell) `Cd api && flask run`
+2. (In a separate terminal shell) `cd api` and then `flask run`
 
