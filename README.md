@@ -22,7 +22,7 @@ This graphical user interface tool allows for rapid labeling of image data. Imag
 5. Optionally, create and activate a virtual environment.
 
     * Create a virtual environment. 
-        `python3 -m venv /path/to/new/virtual/environment`
+        `python3 -m venv venv`
 
     * Activate the virtual environment. 
         ` . venv/bin/activate`
