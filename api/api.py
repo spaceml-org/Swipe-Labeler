@@ -64,6 +64,3 @@ def submit_label():
 
     return {'status': 'success'}
 
-
-if __name__=="__main__":
-    app.run()
