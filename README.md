@@ -6,10 +6,10 @@ This graphical user interface tool allows for rapid labeling of image data. Imag
 ## Setup (for development)
 
 1. Clone this repo 
-    `git clone https://github.com/Jenessap/Practice`
+    `git clone https://github.com/spaceml-org/Swipe-Labeler`
 
 2. Navigate into this project's root directory. 
-    `cd swipe-labeler`
+    `cd Swipe-Labeler`
 
 3. You’ll need to have python3 (https://www.python.org/downloads/) and pip (https://pip.pypa.io/en/stable/installing/) installed as well as npm (https://www.npmjs.com/get-npm).
 
