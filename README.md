@@ -30,16 +30,12 @@
 6. From inside the api directory, install the python dependencies (Flask plus more). 
     `pip install -r requirements.txt`
 
-7. From here within the virtual environment, define three environment variables:
-
-    * The directory that contains your unlabeled images. Keep in mind that the files in this folder will be moved from here once labeled using the tool. 
-        `export SPACEML_IMAGES_DIR=(your unlabeled images directory)`
-
-    * The directory where you would like to store the images labeled positive (where the images will go when "Accept" is chosen in the graphical interface).  
-        `export SPACEML_POS_DIR=(your directory to be filled with positive newly-labeled images)`
-
-    * The directory where you would like to store the images labeled negative (where the images will go when "Reject" is chosen in the graphical interface). 
-        `export SPACEML_NEG_DIR=(your directory to be filled with negative newly-labeled images)`
+7. From here within the virtual environment, define one environment variables which is the directory that contains your unlabeled images. 
+        `export IMAGES_DIRECTORY=(your unlabeled images directory)`
+When you run this application, a subfolder will be created for you inside your IMAGES_DIRECTORY. This subfolder, "swipe_labeler_data", will contain the following:
+    * swipe_labeler_data/unlabeled - Containing **copies** of all of the images in IMAGES_DIRECTORY. These files will be moved from this location when they are labeled using the application.
+    * swipe_labeler_data/labeled_positive - Gets populated with the image files labeled positive when the user clicks "Accept", swipes right, or presses the right arrow key on the keyboard.
+    * swipe_labeler_data/labeled_negative - Gets populated with the image files labeled negative when the user clicks "Reject", swipes left, or presses the right left key on the keyboard.
 
 
 ### Setting up the web application

@@ -20,12 +20,12 @@ html > body {
   }
 
 
-  .Swipe_screen {
+  .SwipeScreen {
     width: 100%;
     
   }
   
-  .Question{
+  .Question {
     width: 100%;
   }
 
@@ -33,7 +33,7 @@ html > body {
     width: 100%;
   }
 
-  .Swipe_screen img {
+  .SwipeScreen img {
       width: 500px;
   }
 

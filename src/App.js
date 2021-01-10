@@ -84,7 +84,7 @@ export default class App extends React.Component {
     return (
       <div className="App">
         {this.state.images ? (
-          <Swipe_screen
+          <SwipeScreen
             index={this.state.index}
             image={this.state.images[this.state.index]}
             onAcceptClick={this.onAcceptClick}
@@ -98,7 +98,7 @@ export default class App extends React.Component {
   }
 }
 
-class Swipe_screen extends React.Component {
+class SwipeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -128,7 +128,7 @@ class Swipe_screen extends React.Component {
 
   onKeyPress = (event) => {
     // Key press alternatives
-    if (event.key == "ArrowRight") {
+    if (event.key === "ArrowRight") {
       this.props.onAcceptClick();
     } else if (event.key === "ArrowLeft") {
       this.props.onRejectClick();
@@ -137,11 +137,11 @@ class Swipe_screen extends React.Component {
 
   render() {
     return (
-      <div className="Swipe_screen">
+      <div className="SwipeScreen">
         <div className="Question">
           <div className="Image_wrapper">
             <TinderCard onSwipe={this.onSwipe} preventSwipe={["right", "left"]}>
-              <img src={this.props.image} />
+              <img src={this.props.image} alt=""/>
             </TinderCard>
           </div>
 
