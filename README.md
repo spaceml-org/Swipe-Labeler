@@ -35,7 +35,7 @@
 When you run this application, a subfolder will be created for you inside your IMAGES_DIRECTORY. This subfolder, "swipe_labeler_data", will contain the following:
     * swipe_labeler_data/unlabeled - Containing **copies** of all of the images in IMAGES_DIRECTORY. These files will be moved from this location when they are labeled using the application.
     * swipe_labeler_data/labeled_positive - Gets populated with the image files labeled positive when the user clicks "Accept", swipes right, or presses the right arrow key on the keyboard.
-    * swipe_labeler_data/labeled_negative - Gets populated with the image files labeled negative when the user clicks "Reject", swipes left, or presses the right left key on the keyboard.
+    * swipe_labeler_data/labeled_negative - Gets populated with the image files labeled negative when the user clicks "Reject", swipes left, or presses the arrow left key on the keyboard.
 
 
 ### Setting up the web application
