@@ -5,45 +5,49 @@
 
 ## Setup (for development)
 
-1. Clone this repo 
+1. Clone this repo \
     `git clone https://github.com/spaceml-org/Swipe-Labeler`
 
-2. Navigate into this project's root directory. 
+2. Navigate into this project's root directory. \
     `cd Swipe-Labeler`
 
-3. You’ll need to have python3 (https://www.python.org/downloads/) and pip (https://pip.pypa.io/en/stable/installing/) installed as well as npm (https://www.npmjs.com/get-npm).
+3. You’ll need to have python3 and pip installed as well as npm. (See FAQ's below.)
 
 
 ### Setting up the web server
 
-4. Navigate into the subdirectory: "api". 
+4. Navigate into the subdirectory: "api". \
     `cd api`
 
-5. Optionally, create and activate a virtual environment.
+5. Optionally, create and activate a virtual environment. 
 
-    * Create a virtual environment. 
+    * Create a virtual environment. \
         `python3 -m venv venv`
 
-    * Activate the virtual environment. 
+    * Activate the virtual environment. \
         ` . venv/bin/activate`
 
-6. From inside the api directory, install the python dependencies (Flask plus more). 
+6. From inside the api directory, install the python dependencies (Flask plus more). \
     `pip install -r requirements.txt`
 
-7. From here within the virtual environment, define one environment variables which is the directory that contains your unlabeled images. 
-        `export IMAGES_DIRECTORY=(your unlabeled images directory)`
-When you run this application, a subfolder will be created for you inside your IMAGES_DIRECTORY. This subfolder, "swipe_labeler_data", will contain the following:
-    * swipe_labeler_data/unlabeled - Containing **copies** of all of the images in IMAGES_DIRECTORY. These files will be moved from this location when they are labeled using the application.
-    * swipe_labeler_data/labeled_positive - Gets populated with the image files labeled positive when the user clicks "Accept", swipes right, or presses the right arrow key on the keyboard.
-    * swipe_labeler_data/labeled_negative - Gets populated with the image files labeled negative when the user clicks "Reject", swipes left, or presses the arrow left key on the keyboard.
+7. From here within the virtual environment, define one environment variable: the directory that contains your unlabeled images. \
+        `export IMAGES_DIRECTORY=(your unlabeled images directory complete path)` \
+\
+**Important Note** - When you run this application, a subfolder will be created for you inside your IMAGES_DIRECTORY. This subfolder, "**swipe_labeler_data**", will contain the following:
+
+    * **swipe_labeler_data/unlabeled** - Containing **copies** of all of the images in IMAGES_DIRECTORY. These files will be moved from this location when they are labeled using the application.
+    
+    * **swipe_labeler_data/labeled_positive** - Gets populated with the image files labeled positive when the user clicks "Accept", swipes right, or presses the right arrow key on the keyboard. 
+    
+    * **swipe_labeler_data/labeled_negative** - Gets populated with the image files labeled negative when the user clicks "Reject", swipes left, or presses the arrow left key on the keyboard. 
 
 
 ### Setting up the web application
 
-8. Navigate back to the project's root directory. 
+8. Navigate back to the project's root directory. \
     `cd ..`
 
-9. Use npm to install the javascript files and their dependencies. 
+9. Use npm to install the javascript files and their dependencies. \
     `npm install`
 
 

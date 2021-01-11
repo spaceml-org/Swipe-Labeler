@@ -40,7 +40,7 @@ def list_image_urls():
         os.mkdir(labeled_negative)
 
     # A list of all the served urls for each of the images in the unlabeled_folder.
-    images = ['/media/' + x.name for x in Path(unlabeled_folder).iterdir() if x.name != ".DS_Store"]
+    images = ['/media/' + x.name for x in Path(unlabeled_folder).iterdir() if x.name != ".DS_Store" and x.name !="swipe_labeler_data"]
        
     return {'images': images}
 
