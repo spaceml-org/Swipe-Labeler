@@ -3,11 +3,17 @@ from pathlib import Path
 import os
 import shutil
 
-from flask import Flask, request, send_from_directory
+from flask import Flask, request, send_from_directory, render_template
 
 
-app = Flask(__name__)
 
+app = Flask(__name__, template_folder=os.path.join(str(Path().absolute().parent), 'build'), static_folder=os.path.join(str(Path().absolute().parent), 'build', 'static'))
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+    
 
 @app.route('/images')
 def list_image_urls():

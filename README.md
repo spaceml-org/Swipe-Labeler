@@ -2,16 +2,53 @@
 
 <p>This graphical user interface tool allows for rapid labeling of image data. Images from your unlabeled images directory will be presented one at a time in a graphical user interface. For each image, the user can choose to either “Accept” or “Reject” the image for the classification in question.</p><p>For example, if you’re looking to label images as either containing or not containing a cat, the user would choose “Accept” for any cat image presented and “Reject” for any image presented that doesn’t contain a cat. The application then moves the newly labeled image file from your unlabeled images directory to your chosen positive or negative directory, depending on the user’s label choice.</p><p>The user has three methods to classify each presented image.  The user may: click on the “Accept” or “Reject” buttons, swipe the image to the right for “Accept” or to the left for “Reject”, or use the keyboard right arrow key for “Accept” and the keyboard left arrow key for “Reject”.</p>
 
+## Usage
+
+1. You’ll need to have python3 and pip installed. (See FAQ's below.)
+
+2. Clone this repo. \
+    `git clone https://github.com/spaceml-org/Swipe-Labeler`
+
+3. Navigate into this project's `api` directory. \
+    `cd Swipe-Labeler/api`
+
+4. Optionally, create and activate a virtual environment. 
+
+    * Create a virtual environment. \
+        `python3 -m venv venv`
+
+    * Activate the virtual environment. \
+        ` . venv/bin/activate`
+
+5. From inside the api directory, install the python dependencies (Flask plus more). \
+    `pip install -r requirements.txt`
+
+6. From here within the virtual environment, define one environment variable: the directory that contains your unlabeled images. \
+        `export IMAGES_DIRECTORY=(your unlabeled images directory complete path)` \
+\
+**Important Note** - When you run this application, a subfolder will be created for you inside your `IMAGES_DIRECTORY`. This subfolder, `swipe_labeler_data`, will contain the following:
+
+    * **swipe_labeler_data/unlabeled** - Containing **copies** of all of the images in IMAGES_DIRECTORY. These files will be moved from this location when they are labeled using the application.
+    
+    * **swipe_labeler_data/labeled_positive** - Gets populated with the image files labeled positive when the user clicks "Accept", swipes right, or presses the right arrow key on the keyboard. 
+    
+    * **swipe_labeler_data/labeled_negative** - Gets populated with the image files labeled negative when the user clicks "Reject", swipes left, or presses the arrow left key on the keyboard. 
+
+7. Run the application. \
+`flask run`
+
+
+
 
 ## Setup (for development)
 
-1. Clone this repo \
+1. You’ll need to have python3 and pip installed **as well as npm**. (See FAQ's below.) 
+
+2. Clone this repo \
     `git clone https://github.com/spaceml-org/Swipe-Labeler`
 
-2. Navigate into this project's root directory. \
+3. Navigate into this project's root directory. \
     `cd Swipe-Labeler`
-
-3. You’ll need to have python3 and pip installed as well as npm. (See FAQ's below.)
 
 
 ### Setting up the web server
@@ -33,7 +70,7 @@
 7. From here within the virtual environment, define one environment variable: the directory that contains your unlabeled images. \
         `export IMAGES_DIRECTORY=(your unlabeled images directory complete path)` \
 \
-**Important Note** - When you run this application, a subfolder will be created for you inside your IMAGES_DIRECTORY. This subfolder, "**swipe_labeler_data**", will contain the following:
+**Important Note** - When you run this application, a subfolder will be created for you inside your `IMAGES_DIRECTORY`. This subfolder, `swipe_labeler_data`, will contain the following:
 
     * **swipe_labeler_data/unlabeled** - Containing **copies** of all of the images in IMAGES_DIRECTORY. These files will be moved from this location when they are labeled using the application.
     
@@ -52,11 +89,26 @@
 
 
 
-## Usage (for development)
+### Usage (for development)
 
 Run these two commands in two different terminal shells opened to the project's root directory:
 
 1. `npm start`
 
-2. (In a separate terminal shell) `cd api` and then `flask run`
+2. (In a separate terminal shell) `cd api` and then `flask run` 
 
+
+
+## FAQ's
+1. **Do I need to have npm installed to run this?** \
+If you are not developing, you do not need to have npm installed. \
+If you would like to run it for development, however, you will need to have it installed (and follow the development instructions above).
+
+2. **What is npm? How do I download npm?** \
+npm is basically an installation package for javascript, like pip is for python. You can find more information here : https://www.npmjs.com/get-npm . 
+
+3. **Do I need to use Python 3?** \
+Yes. But if this conflicts with the version you have working on your system, you can isolate this version inside a virtual environment (see optional instructions for this above). More info here: https://www.python.org/downloads/ .
+
+4. **Do I need to use pip to install the python packages?** \
+You can use other methods, but the instructions above are written using pip. You can find more information about pip here: https://pip.pypa.io/en/stable/installing/ .

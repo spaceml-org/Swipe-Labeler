@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/static/css/main.d2329405.chunk.css",
+    "main.js": "/static/js/main.7eba155f.chunk.js",
+    "main.js.map": "/static/js/main.7eba155f.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.367fd77e.js",
+    "runtime-main.js.map": "/static/js/runtime-main.367fd77e.js.map",
+    "static/css/2.9a8a6a5d.chunk.css": "/static/css/2.9a8a6a5d.chunk.css",
+    "static/js/2.6f78ff81.chunk.js": "/static/js/2.6f78ff81.chunk.js",
+    "static/js/2.6f78ff81.chunk.js.map": "/static/js/2.6f78ff81.chunk.js.map",
+    "static/js/3.98e614dc.chunk.js": "/static/js/3.98e614dc.chunk.js",
+    "static/js/3.98e614dc.chunk.js.map": "/static/js/3.98e614dc.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/2.9a8a6a5d.chunk.css.map": "/static/css/2.9a8a6a5d.chunk.css.map",
+    "static/css/main.d2329405.chunk.css.map": "/static/css/main.d2329405.chunk.css.map",
+    "static/js/2.6f78ff81.chunk.js.LICENSE.txt": "/static/js/2.6f78ff81.chunk.js.LICENSE.txt",
+    "static/media/blueprint-icons.css": "/static/media/icons-20.cde033c5.eot",
+    "static/media/moonlanding.816821ea.jpg": "/static/media/moonlanding.816821ea.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.367fd77e.js",
+    "static/css/2.9a8a6a5d.chunk.css",
+    "static/js/2.6f78ff81.chunk.js",
+    "static/css/main.d2329405.chunk.css",
+    "static/js/main.7eba155f.chunk.js"
+  ]
+}

@@ -1,5 +1,6 @@
 import React from "react";
 import "./styles.css";
+import moonlanding from "./tutorial-images/moonlanding.jpg";
 import TinderCard from "react-tinder-card";
 import { Button } from "@blueprintjs/core";
 import "normalize.css";
@@ -11,6 +12,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      view: "tutorial",
       index: 0,
       images: null,
       batch_size: null,
@@ -21,6 +23,7 @@ export default class App extends React.Component {
     this.sendSelection = this.sendSelection.bind(this);
     this.onAcceptClick = this.onAcceptClick.bind(this);
     this.onRejectClick = this.onRejectClick.bind(this);
+    this.endTutorial = this.endTutorial.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -80,21 +83,31 @@ export default class App extends React.Component {
     });
   }
 
+  endTutorial() {
+    this.setState({
+      view: "active",
+    });
+  }
+
   render() {
-    return (
-      <div className="App">
-        {this.state.images ? (
-          <SwipeScreen
-            index={this.state.index}
-            image={this.state.images[this.state.index]}
-            onAcceptClick={this.onAcceptClick}
-            onRejectClick={this.onRejectClick}
-          />
-        ) : (
-          <Button loading={true} />
-        )}
-      </div>
-    );
+    var body = null;
+
+    if (this.state.view === "tutorial")
+      body = <TutorialScreen end={this.endTutorial} />;
+
+    else if (this.state.view === "active")
+      body = this.state.images ? (
+        <SwipeScreen
+          index={this.state.index}
+          image={this.state.images[this.state.index]}
+          onAcceptClick={this.onAcceptClick}
+          onRejectClick={this.onRejectClick}
+        />
+      ) : (
+        <Button loading={true} />
+      );
+
+    return <div className="App">{body}</div>;
   }
 }
 
@@ -124,7 +137,7 @@ class SwipeScreen extends React.Component {
     } else if (direction === "left") {
       this.props.onRejectClick();
     }
-  };
+  }
 
   onKeyPress = (event) => {
     // Key press alternatives
@@ -133,7 +146,7 @@ class SwipeScreen extends React.Component {
     } else if (event.key === "ArrowLeft") {
       this.props.onRejectClick();
     }
-  };
+  }
 
   render() {
     return (
@@ -141,7 +154,7 @@ class SwipeScreen extends React.Component {
         <div className="Question">
           <div className="Image_wrapper">
             <TinderCard onSwipe={this.onSwipe} preventSwipe={["right", "left"]}>
-              <img src={this.props.image} alt=""/>
+              <img src={this.props.image} alt="" />
             </TinderCard>
           </div>
 
@@ -159,6 +172,83 @@ class SwipeScreen extends React.Component {
             className="AcceptRejectButton"
             intent="success"
             onClick={this.props.onAcceptClick}
+          >
+            Accept
+          </Button>
+        </div>
+      </div>
+    );
+  }
+}
+
+class TutorialScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      prevLabel: null,
+      tutorialIndex: 0,
+      acceptMessages:["Great! You believe in science."],
+      rejectMessages: ["Oh! I see you're a conspiracy theorist."], 
+    };
+
+    this.onTutorialAcceptClick = this.onTutorialAcceptClick.bind(this);
+    this.onTutorialRejectClick = this.onTutorialRejectClick.bind(this);
+    this.onTutorialSwipe = this.onTutorialSwipe.bind(this);
+  }
+
+  onTutorialAcceptClick() {
+    alert(this.state.acceptMessages[this.state.tutorialIndex])
+    this.setState({
+      prevLabel: "accept",
+      tutorialIndex: this.state.tutorialIndex + 1,
+    });
+  }
+
+  onTutorialRejectClick() {
+    this.setState({
+      prevLabel: "reject",
+      tutorialIndex: this.state.tutorialIndex + 1,
+    });
+  }
+
+  onTutorialSwipe(direction){
+    // From TinderCard
+    if (direction === "right") {
+      this.onTutorialAcceptClick();
+    } else if (direction === "left") {
+      this.onTutorialRejectClick();
+    }
+
+  }
+
+
+  render() {
+    return (
+      <div className="TutorialScreen">
+        <div className="Question">
+          <div className="Image_wrapper">
+            <TinderCard
+              onSwipe={this.onTutorialSwipe}
+              preventSwipe={["right", "left"]}
+            >
+              <img src={moonlanding} alt="" />
+            </TinderCard>
+          </div>
+
+          <Button
+            icon="small-cross"
+            className="AcceptRejectButton"
+            intent="primary"
+            onClick={this.onTutorialRejectClick}
+          >
+            Reject
+          </Button>
+
+          <Button
+            icon="tick"
+            className="AcceptRejectButton"
+            intent="success"
+            onClick={this.onTutorialAcceptClick}
           >
             Accept
           </Button>
