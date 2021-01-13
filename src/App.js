@@ -48,7 +48,12 @@ export default class App extends React.Component {
         this.setState({
           images: data.images,
           batch_size: data.images.length,
+          index: 0,
         });
+        if (!data.images.length)
+          this.setState({
+            view: "end",
+          });
       });
   }
 
@@ -94,7 +99,6 @@ export default class App extends React.Component {
 
     if (this.state.view === "tutorial")
       body = <TutorialScreen end={this.endTutorial} />;
-
     else if (this.state.view === "active")
       body = this.state.images ? (
         <SwipeScreen
@@ -106,6 +110,7 @@ export default class App extends React.Component {
       ) : (
         <Button loading={true} />
       );
+    else if (this.state.view === "end") body = <EndScreen />;
 
     return <div className="App">{body}</div>;
   }
@@ -137,7 +142,7 @@ class SwipeScreen extends React.Component {
     } else if (direction === "left") {
       this.props.onRejectClick();
     }
-  }
+  };
 
   onKeyPress = (event) => {
     // Key press alternatives
@@ -146,7 +151,7 @@ class SwipeScreen extends React.Component {
     } else if (event.key === "ArrowLeft") {
       this.props.onRejectClick();
     }
-  }
+  };
 
   render() {
     return (
@@ -187,8 +192,9 @@ class TutorialScreen extends React.Component {
     this.state = {
       prevLabel: null,
       tutorialIndex: 0,
-      acceptMessages:["Great! You believe in science."],
-      rejectMessages: ["Oh! I see you're a conspiracy theorist."], 
+      tutorialImages: [moonlanding],
+      acceptMessages: ["Great! You believe in science."],
+      rejectMessages: ["Oh! I see you're a conspiracy theorist."],
     };
 
     this.onTutorialAcceptClick = this.onTutorialAcceptClick.bind(this);
@@ -197,30 +203,36 @@ class TutorialScreen extends React.Component {
   }
 
   onTutorialAcceptClick() {
-    alert(this.state.acceptMessages[this.state.tutorialIndex])
+    // console.log(this.state.tutorialImages.length)
+    alert(this.state.acceptMessages[this.state.tutorialIndex]);
     this.setState({
       prevLabel: "accept",
       tutorialIndex: this.state.tutorialIndex + 1,
     });
+    if (this.state.tutorialIndex === this.state.tutorialImages.length - 1) {
+      this.props.end();
+    }
   }
 
   onTutorialRejectClick() {
+    alert(this.state.rejectMessages[this.state.tutorialIndex]);
     this.setState({
       prevLabel: "reject",
       tutorialIndex: this.state.tutorialIndex + 1,
     });
+    if (this.state.tutorialIndex === this.state.tutorialImages.length - 1) {
+      this.props.end();
+    }
   }
 
-  onTutorialSwipe(direction){
+  onTutorialSwipe(direction) {
     // From TinderCard
     if (direction === "right") {
       this.onTutorialAcceptClick();
     } else if (direction === "left") {
       this.onTutorialRejectClick();
     }
-
   }
-
 
   render() {
     return (
@@ -231,7 +243,10 @@ class TutorialScreen extends React.Component {
               onSwipe={this.onTutorialSwipe}
               preventSwipe={["right", "left"]}
             >
-              <img src={moonlanding} alt="" />
+              <img
+                src={this.state.tutorialImages[this.state.tutorialIndex]}
+                alt=""
+              />
             </TinderCard>
           </div>
 
@@ -255,5 +270,15 @@ class TutorialScreen extends React.Component {
         </div>
       </div>
     );
+  }
+}
+
+class EndScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  render() {
+    return <div>All wrapped up! Good job!</div>;
   }
 }
