@@ -45,11 +45,9 @@ img {
 }
 
 .TutorialScreen_Question_Image_Text {
-  padding-top: 300px;
+  padding: 300px 15% 0 15%;
   color: white;
-  font-size: 2rem;
-  font-weight: bold;
-  text-shadow: 1px 1px 2px black;
+  text-shadow: 1px 1px 10px black;
 }
 
 .EndScreen {
@@ -63,4 +61,13 @@ img {
   font-size: 3rem;
   font-weight: bold;
   text-shadow: 1px 1px 2px black;
+}
+
+.TutorialScreen_Question_Image_Text_Title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.TutorialScreen_Question_Image_Text_Caption {
+  font-size: 1.3rem;
 }

@@ -1,7 +1,9 @@
 import React from "react";
 import "./styles.css";
-import mooncrescent from "./tutorial-images/mooncrescent.jpg";
-import moonlanding from "./tutorial-images/moonlanding.jpg";
+import moon from "./tutorial-images/moon.jpg";
+import flag from "./tutorial-images/flag.jpg";
+import earthrise from "./tutorial-images/earthrise.jpg";
+import astronaut from "./tutorial-images/astronaut.jpg";
 import TinderCard from "react-tinder-card";
 import { Button } from "@blueprintjs/core";
 import "normalize.css";
@@ -193,12 +195,18 @@ class TutorialScreen extends React.Component {
     this.state = {
       prevLabel: null,
       tutorialIndex: 0,
-      tutorialImages: [mooncrescent, mooncrescent, mooncrescent, mooncrescent],
+      tutorialImages: [moon, earthrise, flag],
       tutorialMessages: [
-        'Welcome to the Swipe Labeler tool.            You can label images in three ways. First click "Accept" or "Reject" to continue.',
-        "Now try swiping the image to the left or to the right.",
-        "Now try a keyboard shortcut. Press your arrow left key or your arrow right key on your keyboard.",
-        "That's it! Use any method to accept or reject this screen and your own images will load. Happy labeling!",
+        {
+          title: "Welcome to the Swipe Labeler tool.",
+          caption:
+            'You can label images in three ways. First click "Accept" or "Reject" to continue.',
+        },
+        { caption: "Now try swiping the image to the left or to the right." },
+        {
+          caption:
+            "Now try a keyboard shortcut. Press your arrow left key or your arrow right key on your keyboard.",
+        },
       ],
     };
 
@@ -222,25 +230,25 @@ class TutorialScreen extends React.Component {
   onTutorialAcceptClick() {
     // This and onTutorialRejectClick could be one just one function: onTutorialClick.
     // Kept as separate function in case later want to add interaction based on user's choice.
+    if (this.state.tutorialIndex === this.state.tutorialImages.length - 1) {
+      this.props.end();
+    }
     this.setState({
       prevLabel: "accept",
       tutorialIndex: this.state.tutorialIndex + 1,
     });
-    if (this.state.tutorialIndex === this.state.tutorialImages.length) {
-      this.props.end();
-    }
   }
 
   onTutorialRejectClick() {
     // This and onTutorialAcceptClick could be one just one function: onTutorialClick.
     // Kept as separate function in case later want to add interaction based on user's choice.
+    if (this.state.tutorialIndex === this.state.tutorialImages.length - 1) {
+      this.props.end();
+    }
     this.setState({
       prevLabel: "reject",
       tutorialIndex: this.state.tutorialIndex + 1,
     });
-    if (this.state.tutorialIndex === this.state.tutorialImages.length) {
-      this.props.end();
-    }
   }
 
   onTutorialSwipe(direction) {
@@ -262,6 +270,7 @@ class TutorialScreen extends React.Component {
   };
 
   render() {
+    var message = this.state.tutorialMessages[this.state.tutorialIndex];
     return (
       <div className="TutorialScreen">
         <div className="Question">
@@ -280,7 +289,13 @@ class TutorialScreen extends React.Component {
                 }}
               >
                 <div className="TutorialScreen_Question_Image_Text">
-                  {this.state.tutorialMessages[this.state.tutorialIndex]}
+                  <div className="TutorialScreen_Question_Image_Text_Title">
+                    {message.title}
+                  </div>
+                  <div className="TutorialScreen_Question_Image_Text_Caption">
+                    {message.caption}
+                  </div>
+                  {/* {this.state.tutorialMessages[this.state.tutorialIndex]} */}
                 </div>
               </div>
             </TinderCard>
@@ -319,7 +334,7 @@ class EndScreen extends React.Component {
       <div
         className="EndScreen"
         style={{
-          backgroundImage: "url('" + moonlanding + "')",
+          backgroundImage: "url('" + astronaut + "')",
         }}
       >
         <div className="EndScreen_Text">Mission accomplished! Good job!</div>
