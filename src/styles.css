@@ -1,47 +1,66 @@
 html > body {
-    font-family: "Cairo", sans-serif;
-  }
-  
-  html,
-  #root,
-  body {
-    height: 100%;
-  }
-  
-  body {
-    margin: 0px;
-  }
-  
-  .App {
-    display: flex;
-    height: 100%;
-    flex-direction: column;
-    text-align: center;
-  }
+  font-family: "Cairo", sans-serif;
+}
 
+html,
+#root,
+body {
+  height: 100%;
+}
 
-  .SwipeScreen {
-    width: 100%;
-    
-  }
-  
-  .Question {
-    width: 100%;
-  }
+body {
+  margin: 0px;
+}
 
-  .Image_wrapper{
-    width: 100%;
-  }
+.App {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  text-align: center;
+}
 
-  img {
-      width: 500px;
-  }
+.SwipeScreen {
+  width: 100%;
+}
 
-  .AcceptRejectButton{
-    margin:30px;
-  }
+.Question {
+  width: 100%;
+}
 
+.Image_wrapper {
+  width: 100%;
+}
 
+img {
+  width: 500px;
+}
 
+.AcceptRejectButton {
+  margin: 30px;
+}
 
+.TutorialScreen_Question_Image {
+  height: 500px;
+  background-size: cover;
+}
 
+.TutorialScreen_Question_Image_Text {
+  padding-top: 300px;
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px black;
+}
+
+.EndScreen {
+  height: 500px;
+  background-size: cover;
+}
+
+.EndScreen_Text {
+  padding-top: 50px;
+  color: white;
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px black;
+}

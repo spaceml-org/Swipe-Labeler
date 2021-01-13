@@ -1,5 +1,6 @@
 import React from "react";
 import "./styles.css";
+import mooncrescent from "./tutorial-images/mooncrescent.jpg";
 import moonlanding from "./tutorial-images/moonlanding.jpg";
 import TinderCard from "react-tinder-card";
 import { Button } from "@blueprintjs/core";
@@ -192,35 +193,52 @@ class TutorialScreen extends React.Component {
     this.state = {
       prevLabel: null,
       tutorialIndex: 0,
-      tutorialImages: [moonlanding],
-      acceptMessages: ["Great! You believe in science."],
-      rejectMessages: ["Oh! I see you're a conspiracy theorist."],
+      tutorialImages: [mooncrescent, mooncrescent, mooncrescent, mooncrescent],
+      tutorialMessages: [
+        'Welcome to the Swipe Labeler tool.            You can label images in three ways. First click "Accept" or "Reject" to continue.',
+        "Now try swiping the image to the left or to the right.",
+        "Now try a keyboard shortcut. Press your arrow left key or your arrow right key on your keyboard.",
+        "That's it! Use any method to accept or reject this screen and your own images will load. Happy labeling!",
+      ],
     };
 
     this.onTutorialAcceptClick = this.onTutorialAcceptClick.bind(this);
     this.onTutorialRejectClick = this.onTutorialRejectClick.bind(this);
     this.onTutorialSwipe = this.onTutorialSwipe.bind(this);
+    this.onTutorialKeyPress = this.onTutorialKeyPress.bind(this);
+  }
+
+  componentWillMount() {
+    // Listens for the keyboard key press events. (Uses "keyup" so the button is only pressed once per choice.)
+    document.addEventListener("keyup", this.onTutorialKeyPress, false);
+  }
+
+  componentWillUnmount() {
+    // Removes the key press event listener if this component is replaced by another component or view.
+    // (Currently there are no other components to replace this view, however.)
+    document.removeEventListener("keyup", this.onTutorialKeyPress);
   }
 
   onTutorialAcceptClick() {
-    // console.log(this.state.tutorialImages.length)
-    alert(this.state.acceptMessages[this.state.tutorialIndex]);
+    // This and onTutorialRejectClick could be one just one function: onTutorialClick.
+    // Kept as separate function in case later want to add interaction based on user's choice.
     this.setState({
       prevLabel: "accept",
       tutorialIndex: this.state.tutorialIndex + 1,
     });
-    if (this.state.tutorialIndex === this.state.tutorialImages.length - 1) {
+    if (this.state.tutorialIndex === this.state.tutorialImages.length) {
       this.props.end();
     }
   }
 
   onTutorialRejectClick() {
-    alert(this.state.rejectMessages[this.state.tutorialIndex]);
+    // This and onTutorialAcceptClick could be one just one function: onTutorialClick.
+    // Kept as separate function in case later want to add interaction based on user's choice.
     this.setState({
       prevLabel: "reject",
       tutorialIndex: this.state.tutorialIndex + 1,
     });
-    if (this.state.tutorialIndex === this.state.tutorialImages.length - 1) {
+    if (this.state.tutorialIndex === this.state.tutorialImages.length) {
       this.props.end();
     }
   }
@@ -234,6 +252,15 @@ class TutorialScreen extends React.Component {
     }
   }
 
+  onTutorialKeyPress = (event) => {
+    // Key press alternatives
+    if (event.key === "ArrowRight") {
+      this.onTutorialAcceptClick();
+    } else if (event.key === "ArrowLeft") {
+      this.onTutorialRejectClick();
+    }
+  };
+
   render() {
     return (
       <div className="TutorialScreen">
@@ -243,10 +270,19 @@ class TutorialScreen extends React.Component {
               onSwipe={this.onTutorialSwipe}
               preventSwipe={["right", "left"]}
             >
-              <img
-                src={this.state.tutorialImages[this.state.tutorialIndex]}
-                alt=""
-              />
+              <div
+                className="TutorialScreen_Question_Image"
+                style={{
+                  backgroundImage:
+                    "url('" +
+                    this.state.tutorialImages[this.state.tutorialIndex] +
+                    "')",
+                }}
+              >
+                <div className="TutorialScreen_Question_Image_Text">
+                  {this.state.tutorialMessages[this.state.tutorialIndex]}
+                </div>
+              </div>
             </TinderCard>
           </div>
 
@@ -279,6 +315,15 @@ class EndScreen extends React.Component {
     this.state = {};
   }
   render() {
-    return <div>All wrapped up! Good job!</div>;
+    return (
+      <div
+        className="EndScreen"
+        style={{
+          backgroundImage: "url('" + moonlanding + "')",
+        }}
+      >
+        <div className="EndScreen_Text">Mission accomplished! Good job!</div>
+      </div>
+    );
   }
 }
