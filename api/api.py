@@ -101,5 +101,15 @@ def submit_label():
 
     return {'status': 'success'}
 
+@app.route('/end', methods=['GET','POST'])
+def endApp():
+    print()
+    ready_to_end = request.get_json()['ready_to_end']
+    if ready_to_end == 'ready':
+        shutdown_hook = request.environ.get('werkzeug.server.shutdown')
+        if shutdown_hook is not None:
+            shutdown_hook()
+    return {'status': 'success'}
+
 app.run()
 

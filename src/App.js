@@ -329,6 +329,18 @@ class EndScreen extends React.Component {
     super(props);
     this.state = {};
   }
+  sendEnd() {
+    // When the user clicks end,
+    // that choice gets sent to flask.
+    fetch("/end", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ready_to_end: "ready",
+      }),
+    });
+  }
+
   render() {
     return (
       <div
@@ -337,7 +349,18 @@ class EndScreen extends React.Component {
           backgroundImage: "url('" + astronaut + "')",
         }}
       >
-        <div className="EndScreen_Text">Mission accomplished! Good job!</div>
+        <div className="EndScreen_Text">
+          Mission accomplished! Good job! Click the button to start training the
+          model.
+        </div>
+        <Button
+          icon="tick"
+          className="AcceptRejectButton"
+          intent="success"
+          onClick={this.sendEnd}
+        >
+          Train Model
+        </Button>
       </div>
     );
   }
