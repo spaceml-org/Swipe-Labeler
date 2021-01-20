@@ -3,12 +3,25 @@ from pathlib import Path
 import os
 import shutil
 
-from flask import Flask, request, send_from_directory, render_template
+from flask import Flask, request, send_from_directory, render_template, session
+from argparse import ArgumentParser
 
-app = Flask(__name__, template_folder=os.path.join(str(Path().absolute().parent), 'build'),
-            static_folder=os.path.join(str(Path().absolute().parent), 'build', 'static'))
+parser = ArgumentParser()   
+parser.add_argument('--batch_size', type=int, help='how many items to label')
+parser.add_argument('--to_be_labeled', type=str, help='folder with images to be labeled')
+args = parser.parse_args()
+batch_size = args.batch_size
+to_be_labeled = args.to_be_labeled
 
-BATCH_SIZE = 5
+
+def create_app(batch_size, to_be_labeled):
+    react_build_directory = os.path.join(str(Path(__file__).resolve().parent.parent),'build')
+    app = Flask (__name__, template_folder=react_build_directory, static_folder=os.path.join(react_build_directory, 'static'))
+    app.config['batch_size'] = batch_size
+    app.config['to_be_labeled'] = to_be_labeled
+    return app
+
+app = create_app(batch_size, to_be_labeled)
 
 
 @app.route('/')
@@ -22,9 +35,9 @@ def list_image_urls():
     '''Gives the list of urls for the served media files for each of the images.'''
 
     # This is the To_Be_Labeled folder (for now passed in as an environment variable.)
-    orig_images_path = Path(os.environ['TO_BE_LABELED_DIRECTORY'])
+    orig_images_path = app.config['to_be_labeled']
     # Finds the parent of To_Be_Labeled, so Labeled can be created as a sibling folder.
-    parent_directory = orig_images_path.parent
+    parent_directory = os.path.dirname(orig_images_path)
     # Define Labeled folder to be at the same level as To_Be_Labeled
     labeled_folder = os.path.join(str(parent_directory), 'Labeled')
     # Make the (parent_directory)/Labeled folder if it doesn't exist already.
@@ -42,8 +55,8 @@ def list_image_urls():
         os.mkdir(labeled_negative)
 
     # # A list of all the served urls for each of the images in the To_Be_Labeled_folder.
-    images = ['/media/' + x.name for x in orig_images_path.iterdir(
-    ) if x.name != ".DS_Store" and x.name != "swipe_labeler_data"][:BATCH_SIZE]
+    images = ['/media/' + x.name for x in Path(orig_images_path).iterdir(
+    ) if x.name != ".DS_Store" and x.name != "swipe_labeler_data"][:app.config['batch_size']]
 
     return {'images': images}
 
@@ -52,7 +65,7 @@ def list_image_urls():
 def serve_image_url(filename):
     '''Serves the single image requested.'''
     # This is the To_Be_Labeled folder (for now passed in as an environment variable.)
-    orig_images_path = Path(os.environ['TO_BE_LABELED_DIRECTORY'])
+    orig_images_path = app.config['to_be_labeled']
     # Serves the single image requested from the To_Be_Labeled folder.
     return send_from_directory(orig_images_path, filename)
 
@@ -68,8 +81,8 @@ def submit_label():
     image_name = image_url[7:]
 
     # These folders are defined in terms of the To_Be_Labeled folder (for now passed in as an environment variable.)
-    orig_images_path = Path(os.environ['TO_BE_LABELED_DIRECTORY'])
-    parent_directory = orig_images_path.parent
+    orig_images_path = app.config['to_be_labeled']
+    parent_directory = os.path.dirname(orig_images_path)
     labeled_folder = os.path.join(str(parent_directory), 'Labeled')
     labeled_positive = os.path.join(labeled_folder, 'Labeled_Positive')
     labeled_negative = os.path.join(labeled_folder, 'Labeled_Negative')
@@ -87,3 +100,6 @@ def submit_label():
         shutil.move(old_path, neg_path)
 
     return {'status': 'success'}
+
+app.run()
+
