@@ -10,12 +10,23 @@ import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
 
+function hasSeenTutorial() {
+  // Checks for a cookie on the users computer that will tell the user has already done the tutorial.
+  return document.cookie
+    .split(";")
+    .some((item) => item.trim().startsWith("hasSeenTutorial="));
+}
+
+function setTutorialSeen() {
+  document.cookie = "hasSeenTutorial=true";
+}
+
 export default class App extends React.Component {
   // Main component
   constructor(props) {
     super(props);
     this.state = {
-      view: "tutorial",
+      view: hasSeenTutorial() ? "active" : "tutorial",
       index: 0,
       images: null,
       batch_size: null,
@@ -95,6 +106,8 @@ export default class App extends React.Component {
     this.setState({
       view: "active",
     });
+    // Set a cookie on the user's browser so they don't see the tutorial again.
+    setTutorialSeen();
   }
 
   render() {

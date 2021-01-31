@@ -6,20 +6,24 @@ import shutil
 from flask import Flask, request, send_from_directory, render_template, session
 from argparse import ArgumentParser
 
-parser = ArgumentParser()   
+parser = ArgumentParser()
 parser.add_argument('--batch_size', type=int, help='how many items to label')
-parser.add_argument('--to_be_labeled', type=str, help='folder with images to be labeled')
+parser.add_argument('--to_be_labeled', type=str,
+                    help='folder with images to be labeled')
 args = parser.parse_args()
 batch_size = args.batch_size
 to_be_labeled = args.to_be_labeled
 
 
 def create_app(batch_size, to_be_labeled):
-    react_build_directory = os.path.join(str(Path(__file__).resolve().parent.parent),'build')
-    app = Flask (__name__, template_folder=react_build_directory, static_folder=os.path.join(react_build_directory, 'static'))
+    react_build_directory = os.path.join(
+        str(Path(__file__).resolve().parent.parent), 'build')
+    app = Flask(__name__, template_folder=react_build_directory,
+                static_folder=os.path.join(react_build_directory, 'static'))
     app.config['batch_size'] = batch_size
     app.config['to_be_labeled'] = to_be_labeled
     return app
+
 
 app = create_app(batch_size, to_be_labeled)
 
@@ -101,7 +105,8 @@ def submit_label():
 
     return {'status': 'success'}
 
-@app.route('/end', methods=['GET','POST'])
+
+@app.route('/end', methods=['GET', 'POST'])
 def endApp():
     print()
     ready_to_end = request.get_json()['ready_to_end']
@@ -111,5 +116,5 @@ def endApp():
             shutdown_hook()
     return {'status': 'success'}
 
-app.run()
 
+app.run(host='0.0.0.0')
