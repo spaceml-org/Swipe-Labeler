@@ -1,8 +1,16 @@
 # Swipe-Labeler Tool
 
-![](https://github.com/spaceml-org/Swipe-Labeler/blob/main/Swipe-Labeler-Demo.gif)
+**Swipe Labeler is a Graphical User Interface based tool that allows rapid labeling of image data.**
 
-<p>This graphical user interface tool allows for rapid labeling of image data. Images from your unlabeled images directory will be presented one at a time in a graphical user interface. For each image, the user can choose to either “Accept” or “Reject” the image for the classification in question.</p><p>For example, if you’re looking to label images as either containing or not containing a cat, the user would choose “Accept” for any cat image presented and “Reject” for any image presented that doesn’t contain a cat. The application then moves the newly labeled image file from your unlabeled images directory to your chosen positive or negative directory, depending on the user’s label choice.</p><p>The user has three methods to classify each presented image.  The user may: click on the “Accept” or “Reject” buttons, swipe the image to the right for “Accept” or to the left for “Reject”, or use the keyboard right arrow key for “Accept” and the keyboard left arrow key for “Reject”.</p>
+![](https://github.com/spaceml-org/Swipe-Labeler/blob/main/Swipe-Labeler-Demo.gif)
+    
+Images will be picked one by one from your unlabeled images directory, and presented through the Swipe Labeler GUI. For each image, the user can choose to classify the image as a positive or negative/absent class using the “Accept” or “Reject” button.
+
+For example, if you’re looking to label images as either containing or not containing a cat, the user would choose “Accept” for any images with a cat, and “Reject” for any images without a cat. The application then transfers the newly labeled image file from your unlabeled images directory to your chosen positive or negative directory. The user can choose the label (e.g. cat, dog) too. The user has three ways to input the classification choice:
+
+- [Standard version] Click on the “Accept” or “Reject” buttons
+- [Social version] Swipe to the right for “Accept” or left for “Reject”
+- [Gamified version] Use the keyboard right arrow key for “Accept” and the keyboard left arrow key for “Reject”.
 
 ## Usage
 
@@ -96,7 +104,6 @@ Run these two commands in two different terminal shells opened to the project's 
 2. (In a separate terminal shell) `cd api` and then `flask run` 
 
 
-
 ## FAQ's
 1. **Do I need to have npm installed to run this?** \
 If you are not developing, you do not need to have npm installed. \
@@ -110,3 +117,19 @@ Yes. But if this conflicts with the version you have working on your system, you
 
 4. **Do I need to use pip to install the python packages?** \
 You can use other methods, but the instructions above are written using pip. You can find more information about pip here: https://pip.pypa.io/en/stable/installing/ .
+
+
+## About the authors
+
+## Citation
+Please cite us if you use our code.
+
+```
+@article{,
+  title={},
+  author={},
+  url={},
+  year={},
+  publisher={}
+}
+```
