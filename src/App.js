@@ -37,6 +37,7 @@ export default class App extends React.Component {
     this.sendSelection = this.sendSelection.bind(this);
     this.onAcceptClick = this.onAcceptClick.bind(this);
     this.onRejectClick = this.onRejectClick.bind(this);
+    this.onBackClick = this.onBackClick.bind(this);
     this.endTutorial = this.endTutorial.bind(this);
   }
 
@@ -102,6 +103,12 @@ export default class App extends React.Component {
     });
   }
 
+  onBackClick() {
+    this.setState({
+      index: this.state.index - 1,
+    });
+  }
+
   endTutorial() {
     this.setState({
       view: "active",
@@ -122,6 +129,7 @@ export default class App extends React.Component {
           image={this.state.images[this.state.index]}
           onAcceptClick={this.onAcceptClick}
           onRejectClick={this.onRejectClick}
+          onBackClick={this.onBackClick}
         />
       ) : (
         <Button loading={true} />
@@ -173,6 +181,13 @@ class SwipeScreen extends React.Component {
     return (
       <div className="SwipeScreen">
         <div className="Question">
+          <Button
+            disabled={this.props.index === 0}
+            className="BackButton"
+            onClick={this.props.onBackClick}
+          >
+            Back
+          </Button>
           <div className="Image_wrapper">
             <TinderCard onSwipe={this.onSwipe} preventSwipe={["right", "left"]}>
               <img src={this.props.image} alt="" />
@@ -362,17 +377,14 @@ class EndScreen extends React.Component {
           backgroundImage: "url('" + astronaut + "')",
         }}
       >
-        <div className="EndScreen_Text">
-          Mission accomplished! Good job! Click the button to start training the
-          model.
-        </div>
+        <div className="EndScreen_Text">Mission accomplished! Good job!</div>
         <Button
           icon="tick"
           className="AcceptRejectButton"
           intent="success"
           onClick={this.sendEnd}
         >
-          Train Model
+          Close
         </Button>
       </div>
     );
