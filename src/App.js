@@ -37,6 +37,7 @@ export default class App extends React.Component {
     this.sendSelection = this.sendSelection.bind(this);
     this.onAcceptClick = this.onAcceptClick.bind(this);
     this.onRejectClick = this.onRejectClick.bind(this);
+    this.onSkipClick = this.onSkipClick.bind(this);
     this.onBackClick = this.onBackClick.bind(this);
     this.endTutorial = this.endTutorial.bind(this);
   }
@@ -94,6 +95,15 @@ export default class App extends React.Component {
     });
   }
 
+  onSkipClick(){
+    // Send no label to flask, mark as ambigous with constant value 10
+    // and update the index so the next image will show.
+    this.sendSelection(10);
+    this.setState({
+      index: this.state.index + 1,
+    })
+  }
+
   onRejectClick() {
     // Send the negative label to flask,
     // and update the index so the next image will show.
@@ -126,9 +136,11 @@ export default class App extends React.Component {
       body = this.state.images ? (
         <SwipeScreen
           index={this.state.index}
+          batch_size={this.state.batch_size}
           image={this.state.images[this.state.index]}
           onAcceptClick={this.onAcceptClick}
           onRejectClick={this.onRejectClick}
+          onSkipClick={this.onSkipClick}
           onBackClick={this.onBackClick}
         />
       ) : (
@@ -143,7 +155,6 @@ export default class App extends React.Component {
 class SwipeScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
 
     this.onSwipe = this.onSwipe.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
@@ -165,7 +176,10 @@ class SwipeScreen extends React.Component {
       this.props.onAcceptClick();
     } else if (direction === "left") {
       this.props.onRejectClick();
+    }else if (direction === "down") {
+      this.props.onSkipClick();
     }
+
   };
 
   onKeyPress = (event) => {
@@ -174,44 +188,54 @@ class SwipeScreen extends React.Component {
       this.props.onAcceptClick();
     } else if (event.key === "ArrowLeft") {
       this.props.onRejectClick();
+    } else if (event.key === "ArrowDown") {
+      this.props.onSkipClick();
     }
   };
 
   render() {
     return (
-      <div className="SwipeScreen">
-        <div className="Question">
-          <Button
-            disabled={this.props.index === 0}
-            className="BackButton"
-            onClick={this.props.onBackClick}
-          >
-            Back
-          </Button>
-          <div className="Image_wrapper">
-            <TinderCard onSwipe={this.onSwipe} preventSwipe={["right", "left"]}>
-              <img src={this.props.image} alt="" />
-            </TinderCard>
+        <div className="SwipeScreen">
+          <div className="Question">
+            <div className="Image_wrapper">
+              <TinderCard onSwipe={this.onSwipe} preventSwipe={["right", "left","down","up"]}>
+                <img src={this.props.image} alt="" />
+              </TinderCard>
+            </div>
+
+            <Button
+              icon="small-cross"
+              className="AcceptRejectButton"
+              intent="primary"
+              onClick={this.props.onRejectClick}
+            >
+              Reject
+            </Button>
+            <Button
+              icon="remove"
+              className="AcceptRejectButton"
+              intent="danger"
+              onClick={this.props.onSkipClick}
+            >
+              Skip
+            </Button>
+            <Button
+              icon="tick"
+              className="AcceptRejectButton"
+              intent="success"
+              onClick={this.props.onAcceptClick}
+            >
+              Accept
+            </Button>
           </div>
-
           <Button
-            icon="small-cross"
-            className="AcceptRejectButton"
-            intent="primary"
-            onClick={this.props.onRejectClick}
-          >
-            Reject
+              icon="undo"
+              disabled={this.props.index === 0}
+              className="BackButton"
+              onClick={this.props.onBackClick}
+            >
+              Undo
           </Button>
-
-          <Button
-            icon="tick"
-            className="AcceptRejectButton"
-            intent="success"
-            onClick={this.props.onAcceptClick}
-          >
-            Accept
-          </Button>
-        </div>
       </div>
     );
   }
@@ -228,18 +252,19 @@ class TutorialScreen extends React.Component {
         {
           title: "Welcome to the Swipe Labeler tool.",
           caption:
-            'You can label images in three ways. First click "Accept" or "Reject" to continue.',
+            'You can label images in three ways. First click "Accept", "Reject" or "Skip" to continue.',
         },
-        { caption: "Now try swiping the image to the left or to the right." },
+        { caption: "Now try swiping the image left,right, or downwards!." },
         {
           caption:
-            "Now try a keyboard shortcut. Press your arrow left key or your arrow right key on your keyboard.",
+            "Now try a keyboard shortcut. Press your arrow left key,arrow right key, or your arrow down key on your keybord.",
         },
       ],
     };
 
     this.onTutorialAcceptClick = this.onTutorialAcceptClick.bind(this);
     this.onTutorialRejectClick = this.onTutorialRejectClick.bind(this);
+    this.onTutorialSkipClick = this.onTutorialSkipClick.bind(this);
     this.onTutorialSwipe = this.onTutorialSwipe.bind(this);
     this.onTutorialKeyPress = this.onTutorialKeyPress.bind(this);
   }
@@ -267,6 +292,18 @@ class TutorialScreen extends React.Component {
     });
   }
 
+  onTutorialSkipClick() {
+    // This and onTutorialAcceptClick could be one just one function: onTutorialClick.
+    // Kept as separate function in case later want to add interaction based on user's choice.
+    if (this.state.tutorialIndex === this.state.tutorialImages.length - 1) {
+      this.props.end();
+    }
+    this.setState({
+      prevLabel: "skip",
+      tutorialIndex: this.state.tutorialIndex + 1,
+    });
+  }
+
   onTutorialRejectClick() {
     // This and onTutorialAcceptClick could be one just one function: onTutorialClick.
     // Kept as separate function in case later want to add interaction based on user's choice.
@@ -285,6 +322,8 @@ class TutorialScreen extends React.Component {
       this.onTutorialAcceptClick();
     } else if (direction === "left") {
       this.onTutorialRejectClick();
+    } else if (direction === "down") {
+      this.onTutorialSkipClick();
     }
   }
 
@@ -294,6 +333,9 @@ class TutorialScreen extends React.Component {
       this.onTutorialAcceptClick();
     } else if (event.key === "ArrowLeft") {
       this.onTutorialRejectClick();
+    }
+    else if (event.key === "ArrowDown") {
+      this.onTutorialSkipClick();
     }
   };
 
@@ -305,7 +347,7 @@ class TutorialScreen extends React.Component {
           <div className="Image_wrapper">
             <TinderCard
               onSwipe={this.onTutorialSwipe}
-              preventSwipe={["right", "left"]}
+              preventSwipe={["right", "left","down"]}
             >
               <div
                 className="TutorialScreen_Question_Image"
@@ -337,6 +379,15 @@ class TutorialScreen extends React.Component {
           >
             Reject
           </Button>
+
+          <Button
+            icon="remove"
+            className="AcceptRejectButton"
+            intent="danger"
+            onClick={this.onTutorialSkipClick}
+          >
+            Accept
+          </Button>      
 
           <Button
             icon="tick"

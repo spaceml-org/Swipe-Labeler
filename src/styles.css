@@ -28,6 +28,7 @@ body {
 }
 
 .Image_wrapper {
+  /* margin-top: 80px; */
   width: 100%;
 }
 
@@ -39,6 +40,10 @@ img {
   margin: 30px;
 }
 
+.BackButton {
+ margin-top:1px;
+ margin-right:4px;
+}
 .TutorialScreen_Question_Image {
   height: 500px;
   background-size: cover;

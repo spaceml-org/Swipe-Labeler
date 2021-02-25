@@ -109,7 +109,7 @@ def submit_label():
 
     # These are paths to this specific image in the folders defined above.
 
-    # Look in all three places: Unlabeled, Labled_Positive, Labeled_Negative
+    # Look in all 4 places: Unlabeled, Labled_Positive, Labeled_Negative, Labeled_Unsure
     old_path = None
     if os.path.exists(os.path.join(orig_images_path, image_name)):
         old_path = os.path.join(orig_images_path, image_name)
@@ -120,8 +120,12 @@ def submit_label():
     elif os.path.exists(os.path.join(labeled_negative, image_name)) and value == 1:
         old_path = os.path.join(labeled_negative, image_name)
 
+    elif os.path.exists(os.path.join(unsure, image_name)) and value == 10:
+        old_path = os.path.join(unsure, image_name)
+
     pos_path = os.path.join(labeled_positive, image_name)
     neg_path = os.path.join(labeled_negative, image_name)
+    unsure_path = os.path.join(unsure,image_name)
 
     # Depending on the value sent by the user, move the image file into the positive or negative folder.
     if old_path:
@@ -131,6 +135,9 @@ def submit_label():
         elif value == 0:
             # Move the file to the negative folder.
             shutil.move(old_path, neg_path)
+        elif value == 10:
+            # Move the file to the unsure folder.
+            shutil.move(old_path, unsure_path)
 
     return {'status': 'success'}
 
