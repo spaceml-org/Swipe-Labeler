@@ -193,7 +193,7 @@ class SwipeScreen extends React.Component {
     }
   };
 
-  render() {   
+  render() {
     return (
       <>
         <div className="SwipeScreen">
@@ -229,6 +229,14 @@ class SwipeScreen extends React.Component {
               Accept
             </Button>
           </div>
+          <Button
+              icon="undo"
+              disabled={this.props.index === 0}
+              className="BackButton"
+              onClick={this.props.onBackClick}
+            >
+              Undo
+          </Button>
       </div>
       </>
     );
