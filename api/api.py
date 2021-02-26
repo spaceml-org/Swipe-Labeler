@@ -123,6 +123,7 @@ def submit_label():
     elif os.path.exists(os.path.join(unsure, image_name)) and value == 10:
         old_path = os.path.join(unsure, image_name)
 
+
     pos_path = os.path.join(labeled_positive, image_name)
     neg_path = os.path.join(labeled_negative, image_name)
     unsure_path = os.path.join(unsure,image_name)
