@@ -193,8 +193,9 @@ class SwipeScreen extends React.Component {
     }
   };
 
-  render() {
+  render() {    
     return (
+      <>
         <div className="SwipeScreen">
           <div className="Question">
             <div className="Image_wrapper">
@@ -228,15 +229,8 @@ class SwipeScreen extends React.Component {
               Accept
             </Button>
           </div>
-          <Button
-              icon="undo"
-              disabled={this.props.index === 0}
-              className="BackButton"
-              onClick={this.props.onBackClick}
-            >
-              Undo
-          </Button>
       </div>
+      </>
     );
   }
 }
@@ -386,7 +380,7 @@ class TutorialScreen extends React.Component {
             intent="danger"
             onClick={this.onTutorialSkipClick}
           >
-            Accept
+            Skip
           </Button>      
 
           <Button
