@@ -32,6 +32,18 @@ body {
   width: 100%;
 }
 
+.count{
+  margin-top: 5px;
+  margin-bottom: 15px;
+  color: #332488; font-family:'Raleway',sans-serif; font-size: 20px; font-weight: normal; line-height: 20px;
+}
+
+.count span{
+  margin: 2.55px;
+  display:inline-block;
+  padding: 2.5px;
+}
+
 img {
   width: 500px;
 }

@@ -5,7 +5,7 @@ import flag from "./tutorial-images/flag.jpg";
 import earthrise from "./tutorial-images/earthrise.jpg";
 import astronaut from "./tutorial-images/astronaut.jpg";
 import TinderCard from "react-tinder-card";
-import { Button } from "@blueprintjs/core";
+import { Button, ProgressBar } from "@blueprintjs/core";
 import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
@@ -98,7 +98,7 @@ export default class App extends React.Component {
   onSkipClick(){
     // Send no label to flask, mark as ambigous with constant value 10
     // and update the index so the next image will show.
-    this.sendSelection(10);
+    this.sendSelection(2);
     this.setState({
       index: this.state.index + 1,
     })
@@ -146,7 +146,14 @@ export default class App extends React.Component {
       ) : (
         <Button loading={true} />
       );
-    else if (this.state.view === "end") body = <EndScreen />;
+    else if (this.state.view === "end") 
+      body = <EndScreen 
+               image={this.state.images[this.state.batch_size-1]}
+               onAcceptClick={this.onAcceptClick}
+               onRejectClick={this.onRejectClick}
+               onSkipClick={this.onSkipClick}
+               onBackClick={this.onBackClick}
+            />;
 
     return <div className="App">{body}</div>;
   }
@@ -158,6 +165,9 @@ class SwipeScreen extends React.Component {
 
     this.onSwipe = this.onSwipe.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
+
+    //bind functions
+    this.decideCountText = this.decideCountText.bind(this);
   }
   componentWillMount() {
     // Listens for the keyboard key press events. (Uses "keyup" so the button is only pressed once per choice.)
@@ -193,9 +203,28 @@ class SwipeScreen extends React.Component {
     }
   };
 
+  decideCountText(){
+    let text = ""
+    let x = this.props.batch_size - this.props.index;
+    if(x !== 1)
+      text = x+" Images Left!";
+    else
+      text = x+" Image Left!";
+    return [text,(this.props.index)/5]
+  }
+
   render() {
+    let [count_text,x] = this.decideCountText();    
     return (
       <>
+        {/* {console.log("props= ",this.props)} */}
+        <div className="count">
+            <span>Batch Total: {this.props.batch_size}</span>
+            <br></br>
+            <span>{count_text}</span>
+            {console.log("x= ",x)}
+            <ProgressBar intent="success" value={x}></ProgressBar>
+        </div>
         <div className="SwipeScreen">
           <div className="Question">
             <div className="Image_wrapper">

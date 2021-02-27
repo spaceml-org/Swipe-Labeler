@@ -120,7 +120,7 @@ def submit_label():
     elif os.path.exists(os.path.join(labeled_negative, image_name)) and value == 1:
         old_path = os.path.join(labeled_negative, image_name)
 
-    elif os.path.exists(os.path.join(unsure, image_name)) and value == 10:
+    elif os.path.exists(os.path.join(unsure, image_name)) and value == 2:
         old_path = os.path.join(unsure, image_name)
 
 
@@ -136,7 +136,7 @@ def submit_label():
         elif value == 0:
             # Move the file to the negative folder.
             shutil.move(old_path, neg_path)
-        elif value == 10:
+        elif value == 2:
             # Move the file to the unsure folder.
             shutil.move(old_path, unsure_path)
 
