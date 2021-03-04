@@ -7,10 +7,6 @@ export default function Timer(){
     return (
         <>
             <strong>{time}</strong>
-            {/* {time} */}
-            {/* <br></br>
-            <br></br> */}
-            
         </>
         
     )
