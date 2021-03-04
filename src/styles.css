@@ -28,7 +28,8 @@ body {
 }
 
 .Image_wrapper {
-  width: 100%;
+  width: fit-content;
+  margin:auto;
 }
 
 .count{

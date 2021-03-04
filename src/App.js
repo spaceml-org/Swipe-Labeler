@@ -7,9 +7,13 @@ import astronaut from "./tutorial-images/astronaut.jpg";
 import TinderCard from "react-tinder-card";
 import Timer from './timer'
 import { Button, ProgressBar } from "@blueprintjs/core";
+import Sparkle from 'react-sparkle'
 import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
+import { Magnifier, GlassMagnifier,SideBySideMagnifier,PictureInPictureMagnifier,MOUSE_ACTIVATION,TOUCH_ACTIVATION
+} from "react-image-magnifiers";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 function hasSeenTutorial() {
   // Checks for a cookie on the users computer that will tell the user has already done the tutorial.
@@ -234,9 +238,14 @@ class SwipeScreen extends React.Component {
         <div className="SwipeScreen">
           <div className="Question">
             <div className="Image_wrapper">
-              <TinderCard onSwipe={this.onSwipe} preventSwipe={["right", "left","down","up"]}>
-                <img src={this.props.image} alt="" />
-              </TinderCard>
+            <TinderCard onSwipe={this.onSwipe} preventSwipe={["right", "left","down","up"]}>
+                <TransformWrapper options={{centerContent:true}} defaultPositionX={50}>
+                  <TransformComponent>
+                    <img src={this.props.image} alt=""  />
+                {/* <Magnifier imageSrc={this.props.image} alt="" /> */}
+                 </TransformComponent>
+                </TransformWrapper>
+            </TinderCard>
             </div>
 
             <Button
@@ -467,6 +476,7 @@ class EndScreen extends React.Component {
         }}
       >
         <div className="EndScreen_Text">Mission accomplished! Good job!</div>
+        <Sparkle />
         <Button
           icon="tick"
           className="AcceptRejectButton"
