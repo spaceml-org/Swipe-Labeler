@@ -5,6 +5,7 @@ import flag from "./tutorial-images/flag.jpg";
 import earthrise from "./tutorial-images/earthrise.jpg";
 import astronaut from "./tutorial-images/astronaut.jpg";
 import TinderCard from "react-tinder-card";
+import Timer from "react-compound-timer";
 import { Button, ProgressBar } from "@blueprintjs/core";
 import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
@@ -129,7 +130,7 @@ export default class App extends React.Component {
 
   render() {
     var body = null;
-
+    // {console.log("Parent Props\n",this.state.images)}
     if (this.state.view === "tutorial")
       body = <TutorialScreen end={this.endTutorial} />;
     else if (this.state.view === "active")
@@ -147,13 +148,14 @@ export default class App extends React.Component {
         <Button loading={true} />
       );
     else if (this.state.view === "end") 
-      body = <EndScreen 
-               image={this.state.images[this.state.batch_size-1]}
-               onAcceptClick={this.onAcceptClick}
-               onRejectClick={this.onRejectClick}
-               onSkipClick={this.onSkipClick}
-               onBackClick={this.onBackClick}
-            />;
+      body = <EndScreen />
+      // body = <EndScreen 
+      //          image={this.state.images[4]}
+      //          onAcceptClick={this.onAcceptClick}
+      //          onRejectClick={this.onRejectClick}
+      //          onSkipClick={this.onSkipClick}
+      //          onBackClick={this.onBackClick}
+      //       />;
 
     return <div className="App">{body}</div>;
   }
@@ -217,13 +219,19 @@ class SwipeScreen extends React.Component {
     let [count_text,x] = this.decideCountText();    
     return (
       <>
-        {/* {console.log("props= ",this.props)} */}
+        {console.log("props= ",this.props)}
         <div className="count">
             <span>Batch Total: {this.props.batch_size}</span>
             <br></br>
             <span>{count_text}</span>
             {console.log("x= ",x)}
-            <ProgressBar intent="success" value={x}></ProgressBar>
+            <br></br>
+            <span className="prog-bar"><ProgressBar  intent="success" value={x} ></ProgressBar></span>
+        </div>
+        <div className="timer">
+            <Timer>
+              <Timer.Seconds /> 
+            </Timer>
         </div>
         <div className="SwipeScreen">
           <div className="Question">
