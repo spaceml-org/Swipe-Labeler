@@ -47,6 +47,7 @@ body {
 .prog-bar{
   width: 500px;
 }
+
 .timer{
   position: absolute;
   top:10px;
