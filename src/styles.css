@@ -49,12 +49,14 @@ body {
 }
 
 .timer{
+  display: inline-block;
   position: absolute;
-  top:10px;
+  top:15px;
   left:600px;
-  width: 50px;
-  height: 50px;
-  padding: 10px;
+  margin: 1px;
+  width: 40px;
+  height: 40px;
+  padding: 3px;
   box-sizing: border-box;
   border: solid 2px black;
   border-radius: 5px;

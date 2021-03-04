@@ -5,7 +5,7 @@ import flag from "./tutorial-images/flag.jpg";
 import earthrise from "./tutorial-images/earthrise.jpg";
 import astronaut from "./tutorial-images/astronaut.jpg";
 import TinderCard from "react-tinder-card";
-import Timer from "react-compound-timer";
+import Timer from './timer'
 import { Button, ProgressBar } from "@blueprintjs/core";
 import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
@@ -212,7 +212,7 @@ class SwipeScreen extends React.Component {
       text = x+" Images Left!";
     else
       text = x+" Image Left!";
-    return [text,(this.props.index)/5]
+    return [text,2*(this.props.index)/5]
   }
 
   render() {
@@ -229,9 +229,7 @@ class SwipeScreen extends React.Component {
             <span className="prog-bar"><ProgressBar  intent="success" value={x} ></ProgressBar></span>
         </div>
         <div className="timer">
-            <Timer>
-              <Timer.Seconds /> 
-            </Timer>
+            <Timer />
         </div>
         <div className="SwipeScreen">
           <div className="Question">
