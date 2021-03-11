@@ -66,7 +66,7 @@ class SwipeScreen extends React.Component {
         text = x+" Images Left!";
       else
         text = x+" Image Left!";
-      return [text,2*(this.props.index)/5]
+      return [text,(this.props.index)/(this.props.batch_size)]
     }
   
     render() {
