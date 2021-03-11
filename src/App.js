@@ -1,19 +1,21 @@
-import React from "react";
+import React,{useEffect} from "react";
 import "./styles.css";
 import moon from "./tutorial-images/moon.jpg";
 import flag from "./tutorial-images/flag.jpg";
 import earthrise from "./tutorial-images/earthrise.jpg";
 import astronaut from "./tutorial-images/astronaut.jpg";
 import TinderCard from "react-tinder-card";
-import Timer from './timer'
+import Timer from './components/timer'
 import { Button, ProgressBar } from "@blueprintjs/core";
-import Sparkle from 'react-sparkle'
+// import Sparkle from 'react-sparkle'
 import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
-import { Magnifier, GlassMagnifier,SideBySideMagnifier,PictureInPictureMagnifier,MOUSE_ACTIVATION,TOUCH_ACTIVATION
-} from "react-image-magnifiers";
+// import { Magnifier, GlassMagnifier,SideBySideMagnifier,PictureInPictureMagnifier,MOUSE_ACTIVATION,TOUCH_ACTIVATION
+// } from "react-image-magnifiers";
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+// import SwipeScreen from './swipescreen'
 
 function hasSeenTutorial() {
   // Checks for a cookie on the users computer that will tell the user has already done the tutorial.
@@ -49,12 +51,12 @@ export default class App extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     // When the index gets updated, show the next image.
-    if (
-      prevState.index !== this.state.index &&
-      this.state.index === this.state.batch_size
-    )
-      this.fetchImages();
-  }
+      if (
+        prevState.index !== this.state.index &&
+        this.state.index === this.state.batch_size
+      )
+        this.fetchImages();
+}
 
   componentDidMount() {
     // When the app loads, get all the image urls from flask.
@@ -476,7 +478,7 @@ class EndScreen extends React.Component {
         }}
       >
         <div className="EndScreen_Text">Mission accomplished! Good job!</div>
-        <Sparkle />
+        {/* <Sparkle /> */}
         <Button
           icon="tick"
           className="AcceptRejectButton"
