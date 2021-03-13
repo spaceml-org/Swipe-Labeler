@@ -7,11 +7,12 @@ import astronaut from "../tutorial-images/astronaut.jpg";
 import TinderCard from "react-tinder-card";
 import Timer from './timer'
 import { Button, ProgressBar } from "@blueprintjs/core";
+// import { useWindowSize } from 'react-use'
+import Confetti from 'react-confetti'
 // import Sparkle from 'react-sparkle'
 import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
-
 
 
 class EndScreen extends React.Component {
@@ -33,6 +34,8 @@ class EndScreen extends React.Component {
   
     render() {
       return (
+        <>
+        <Confetti/>
         <div
           className="EndScreen"
           style={{
@@ -50,6 +53,7 @@ class EndScreen extends React.Component {
             Close
           </Button>
         </div>
+        </>
       );
     }
   }
