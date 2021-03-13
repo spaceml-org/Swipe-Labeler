@@ -1,15 +1,8 @@
 import React,{useEffect} from "react";
 import "../styles.css";
-// import moon from "./tutorial-images/moon.jpg";
-// import flag from "./tutorial-images/flag.jpg";
-// import earthrise from "./tutorial-images/earthrise.jpg";
 import astronaut from "../tutorial-images/astronaut.jpg";
-import TinderCard from "react-tinder-card";
-import Timer from './timer'
 import { Button, ProgressBar } from "@blueprintjs/core";
-// import { useWindowSize } from 'react-use'
 import Confetti from 'react-confetti'
-// import Sparkle from 'react-sparkle'
 import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
