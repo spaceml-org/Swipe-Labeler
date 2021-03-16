@@ -19,43 +19,43 @@ body {
   text-align: center;
 }
 
-.SwipeScreen {
-  width: 100%;
-}
-
-.Question {
-  width: 100%;
+.Content {
 }
 
 .Image_wrapper {
   width: fit-content;
-  margin:auto;
+  margin: auto;
 }
 
-.count{
-  margin-top: 5px;
-  margin-bottom: 15px;
-  color: #332488; font-family:'Raleway',sans-serif; font-size: 20px; font-weight: normal; line-height: 20px;
+.count {
+  display: flex;
+  color: #332488;
+  font-family: "Raleway", sans-serif;
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 20px;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  transform: translateX(-3.5%);
 }
-
-.count span{
+.ct-grp {
+  width: fit-content;
+}
+.count span {
   margin: 2.55px;
-  display:inline-block;
+  display: inline-block;
   padding: 2.5px;
 }
- 
-.prog-bar{
-  width: 500px;
+
+.prog-bar {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
-.timer{
-  display: inline-block;
-  position: absolute;
-  top:15px;
-  left:600px;
-  margin: 1px;
-  width: 40px;
-  height: 40px;
+.timer {
+  margin-right: 3rem;
+  width: fit-content;
   padding: 3px;
   box-sizing: border-box;
   border: solid 2px black;
@@ -63,18 +63,31 @@ body {
 }
 
 img {
-  width: 500px;
+  max-width: 50vw;
+  max-height: 60vh;
+}
+
+.footer {
+  margin-top: 5px;
+}
+
+@media (max-width: 640px) {
+  img {
+    max-width: 90vw;
+  }
+  .Content {
+    flex: 1;
+    margin: 0 auto;
+  }
+  .footer {
+    margin-top: 10vh;
+  }
 }
 
 .AcceptRejectButton {
-  margin: 30px;
+  margin: 20px;
 }
 
-.BackButton {
-  position: absolute;
-  bottom:5px;
-  right:730px;
-}
 .TutorialScreen_Question_Image {
   height: 500px;
   background-size: cover;
