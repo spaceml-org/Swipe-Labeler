@@ -24,6 +24,15 @@ class EndScreen extends React.Component {
     });
   }
 
+  getSwipeTime() {
+    // return document.cookie
+    //   .split(";")
+    //   .some((item) => item.trim().startsWith("swipeTime="));
+    // return document.cookie;
+    return document.cookie.split(";")[1].split("=")[1];
+    // .startsWith("swipeTime="));
+  }
+
   render() {
     return (
       <>
@@ -34,8 +43,12 @@ class EndScreen extends React.Component {
             backgroundImage: "url('" + astronaut + "')",
           }}
         >
+          {console.log("time:", this.getSwipeTime())}
           <div className="EndScreen_Text">Mission accomplished! Good job!</div>
           {/* <Sparkle /> */}
+          <div className="EndScreen_Time_Text">
+            Your labelling time: {this.getSwipeTime()} seconds...
+          </div>
           <Button
             icon="tick"
             className="AcceptRejectButton"
