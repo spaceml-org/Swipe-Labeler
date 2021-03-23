@@ -28,9 +28,13 @@ class EndScreen extends React.Component {
     // return document.cookie
     //   .split(";")
     //   .some((item) => item.trim().startsWith("swipeTime="));
-    // return document.cookie;
-    return document.cookie.split(";")[1].split("=")[1];
-    // .startsWith("swipeTime="));
+    let time;
+    let decoded = decodeURIComponent(document.cookie);
+    decoded.split(";").forEach((item) => {
+      if (item.trim().startsWith("swipeTime")) time = item.trim().split("=")[1];
+    });
+    console.log("time= ", time);
+    return time;
   }
 
   render() {
@@ -43,7 +47,7 @@ class EndScreen extends React.Component {
             backgroundImage: "url('" + astronaut + "')",
           }}
         >
-          {console.log("time:", this.getSwipeTime())}
+          {/* {console.log("time:", this.getSwipeTime())} */}
           <div className="EndScreen_Text">Mission accomplished! Good job!</div>
           {/* <Sparkle /> */}
           <div className="EndScreen_Time_Text">
