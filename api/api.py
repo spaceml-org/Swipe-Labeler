@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import random
 import shutil
 
 from flask import Flask, request, send_from_directory, render_template, session
@@ -32,17 +33,54 @@ def create_app(batch_size, path_for_unlabeled):
     app = Flask(__name__, template_folder=react_build_directory,
                 static_folder=os.path.join(react_build_directory, 'static'))
     app.config['batch_size'] = batch_size
-    app.config['path_for_unlabeled'] = path_for_unlabeled
+    app.config['path_for_unlabeled'] = path_for_unlabeled 
 
-    # Create copy of path_for_unlabeled directory with jpg filetype regardless of original filetypes.
-    app.config['media_dir'] = os.path.join(
-        Path(path_for_unlabeled).resolve().parent, 'media')
-    if os.path.exists(app.config['media_dir']):
-        shutil.rmtree(app.config['media_dir'])
-    shutil.copytree(app.config['path_for_unlabeled'], app.config['media_dir'])
+    # Create a temp folder, if it doesnt exist
+    temp_folder_path = os.path.dirname(path_for_unlabeled) + "\\temp"
+    if not os.path.exists(temp_folder_path):
+        os.mkdir(temp_folder_path)
+    app.config['temp'] = temp_folder_path
 
+    # This is the path_for_unlabeled folder that is passed in as an argument when starting this script.
+    orig_images_path = app.config['path_for_unlabeled']
+    # Finds the parent of path_for_unlabeled, so Labeled can be created as a sibling folder.
+    parent_directory = os.path.dirname(orig_images_path)
+
+    #if user provided arguments for paths then define driectory based on that:
+    if(path_for_neg and path_for_pos and path_for_unsure):
+        # Make the positive label folder
+        if not os.path.exists(path_for_pos):
+            os.mkdir(path_for_pos)
+        # Make the negative label folder
+        if not os.path.exists(path_for_neg):
+            os.mkdir(path_for_neg)
+        # Make the unsure label folder
+        if not os.path.exists(path_for_unsure):
+            os.mkdir(path_for_unsure)
+
+    #default case incase user doesnt provide argument paths for labelling folders
+    else:
+        # Define Labeled folder to be at the same level as path_for_unlabeled
+        labeled_folder = os.path.join(str(parent_directory), 'Labeled')
+        # Make the (parent_directory)/Labeled folder if it doesn't exist already.
+        if not os.path.exists(labeled_folder):
+            os.mkdir(labeled_folder)
+
+        # Create parent_directory/Labeled/Labeled_Positive folder if it doesn't already exist.
+        labeled_positive = os.path.join(labeled_folder, 'Labeled_Positive')
+        if not os.path.exists(labeled_positive):
+            os.mkdir(labeled_positive)
+
+        # # Create swipe_labeler_data/labeled_positive folder if it doesn't already exist.
+        labeled_negative = os.path.join(labeled_folder, 'Labeled_Negative')
+        if not os.path.exists(labeled_negative):
+            os.mkdir(labeled_negative)
+
+        # # Create swipe_labeler_data/labeled_positive folder if it doesn't already exist.
+        unsure = os.path.join(labeled_folder, 'Unsure')
+        if not os.path.exists(unsure):
+            os.mkdir(unsure)
     return app
-
 
 app = create_app(batch_size, path_for_unlabeled)
 
@@ -53,6 +91,26 @@ def index():
     print("testing")
     return render_template('index.html')
 
+@app.route('/image')
+def list_image_url():
+    # Checks the unlabeled directory, picks a random image , returns its url and moves the image to a temp folder
+    src = app.config["path_for_unlabeled"]
+    image = None
+    if ( os.listdir(src) ):
+        image = random.choice(os.listdir(src))
+    if not image:
+        return {"image":"none"}
+    # Move current file to temp folder
+    image_path = os.path.join(src,image)
+    msg = shutil.move(image_path,app.config["temp"])
+
+    return {"image":"/media/"+image , "path":image_path , "msg":msg}
+
+@app.route('/getsize')
+def give_size():
+    src = app.config["path_for_unlabeled"]
+    size = len( [name for name in os.listdir(src)] )
+    return {"batch_size":size}
 
 @app.route('/images')
 def list_image_urls():
@@ -117,7 +175,7 @@ def giveDetails():
 def serve_image_url(filename):
     '''Serves the single image requested.'''
     # This is the path_for_unlabeled folder that is passed in as an argument when starting this script.
-    orig_images_path = app.config['media_dir']
+    orig_images_path = app.config['temp']
     # Serves the single image requested from the path_for_unlabeled folder.
     return send_from_directory(orig_images_path, filename)
 
@@ -133,7 +191,7 @@ def submit_label():
     # This line cuts off the '/media/' at the start of the image_url from request.
     image_name = image_url[7:]
     # These folders are defined in terms of the path_for_unlabeled folder (passed as argument when you start this script)
-    orig_images_path = app.config['path_for_unlabeled']
+    orig_images_path = app.config['temp']
     # If the User provided path arguments then use those paths:
     if(path_for_neg and path_for_pos and path_for_unsure):
         old_path = None
@@ -207,7 +265,6 @@ def submit_label():
                 shutil.move(old_path, unsure_path)
 
     return {'status': 'success'}
-
 
 @app.route('/end', methods=['GET', 'POST'])
 def end_app():

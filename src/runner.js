@@ -1,21 +1,13 @@
 import React, { useEffect } from "react";
 import "./styles.css";
-import moon from "./tutorial-images/moon.jpg";
-import flag from "./tutorial-images/flag.jpg";
-import earthrise from "./tutorial-images/earthrise.jpg";
-import astronaut from "./tutorial-images/astronaut.jpg";
-import TinderCard from "react-tinder-card";
-import { Button, ProgressBar } from "@blueprintjs/core";
+import { Button } from "@blueprintjs/core";
 import { SwipeScreen } from "./components/swipescreen";
 import { TutorialScreen } from "./components/tutorialscreen";
 import { EndScreen } from "./components/endscreen";
 import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
-// import { Magnifier, GlassMagnifier,SideBySideMagnifier,PictureInPictureMagnifier,MOUSE_ACTIVATION,TOUCH_ACTIVATION
-// } from "react-image-magnifiers";
-// import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
-// import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import axios from "axios";
 
 function hasSeenTutorial() {
   // Checks for a cookie on the users computer that will tell the user has already done the tutorial.
@@ -35,49 +27,101 @@ export default class App extends React.Component {
     this.state = {
       view: hasSeenTutorial() ? "active" : "tutorial",
       index: 0,
-      images: null,
+      image: null,
+      total_batch_size: null,
       batch_size: null,
+      imgUrls: [],
+      // loading: false,
     };
 
     // bind functions
     this.fetchImages = this.fetchImages.bind(this);
+    this.fetchImage = this.fetchImage.bind(this);
     this.sendSelection = this.sendSelection.bind(this);
     this.onAcceptClick = this.onAcceptClick.bind(this);
     this.onRejectClick = this.onRejectClick.bind(this);
     this.onSkipClick = this.onSkipClick.bind(this);
     this.onBackClick = this.onBackClick.bind(this);
     this.endTutorial = this.endTutorial.bind(this);
+    this.setLoading = this.setLoading.bind(this);
+    this.generateImages = this.generateImages.bind(this);
+    this.getBatchSize = this.getBatchSize.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    // When the index gets updated, show the next image.
-    if (
-      prevState.index !== this.state.index &&
-      this.state.index === this.state.batch_size
-    )
-      this.fetchImages();
+    componentDidMount() {
+    // When the app loads,get the batch size and then get all the image urls from flask.
+    this.getBatchSize();
+    // this.getTotalBatchSize();
+    this.fetchImage();
   }
 
-  componentDidMount() {
-    // When the app loads, get all the image urls from flask.
-    this.fetchImages();
+  getTotalBatchSize() {
+    axios
+      .get("/getsize")
+      .then((res) => {
+        console.log("response = ", res.data.batch_size);
+        this.setState(
+          {
+            total_batch_size: res.data.batch_size,
+          },
+          () => {
+            console.log("got total batch state as: ", this.state.batch_size);
+          }
+        );
+      })
+      .catch((err) => console.log("ERROR: ", err));
+  }
+
+  
+
+  fetchImage() {
+    // Collect one image url from flask
+    axios
+      .get("/image")
+      .then((res) => {
+        if (res.data.image == "none")
+          this.setState({
+            view: "end",
+          });
+        else
+          this.setState(
+            {
+              image: res.data.image,
+            },
+            () => {
+              this.getBatchSize();
+            }
+          );
+      })
+      .catch((err) => console.log("ERROR: ", err));
   }
 
   fetchImages() {
     // Collect the list of image urls to request one by one later.
-    fetch("/images")
+
+    fetch("/images/" + this.state.index)
       .then((res) => res.json())
       .then((data) => {
         this.setState({
           images: data.images,
           batch_size: data.images.length,
           index: 0,
+          loading: false,
         });
         if (!data.images.length)
           this.setState({
             view: "end",
           });
       });
+    }
+  }
+
+  
+  setLoading(s) {
+    console.log("reached ");
+    this.setState({
+      loading: s,
+    });
   }
 
   sendSelection(value) {
@@ -87,41 +131,48 @@ export default class App extends React.Component {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        image_url: this.state.images[this.state.index],
+        image_url: this.state.image,
         value: value,
       }),
     });
   }
 
   onAcceptClick() {
-    // Send the positive label to flask,
+    // Send the positive label to flask, make call to /image to get the next image from flask
     // and update the index so the next image will show.
-    this.sendSelection(1);
     this.setState({
+      batch_size: this.state.batch_size - 1,
       index: this.state.index + 1,
     });
+    this.sendSelection(1);
+    this.fetchImage();
   }
 
   onSkipClick() {
     // Send no label to flask, mark as ambigous with constant value 10
     // and update the index so the next image will show.
-    this.sendSelection(2);
     this.setState({
+      batch_size: this.state.batch_size - 1,
       index: this.state.index + 1,
     });
+    this.sendSelection(2);
+    this.fetchImage();
   }
 
   onRejectClick() {
     // Send the negative label to flask,
     // and update the index so the next image will show.
-    this.sendSelection(0);
     this.setState({
+      batch_size: this.state.batch_size - 1,
       index: this.state.index + 1,
     });
+    this.sendSelection(0);
+    this.fetchImage();
   }
 
   onBackClick() {
     this.setState({
+      batch_size: this.state.batch_size + 1,
       index: this.state.index - 1,
     });
   }
@@ -135,6 +186,7 @@ export default class App extends React.Component {
   }
 
   render() {
+    // this.getBatchSize();
     var body = null;
     {
       console.log("Parent Props\n", this.state.images);
@@ -142,15 +194,17 @@ export default class App extends React.Component {
     if (this.state.view === "tutorial")
       body = <TutorialScreen end={this.endTutorial} />;
     else if (this.state.view === "active")
-      body = this.state.images ? (
+      body = this.state.image ? (
         <SwipeScreen
           index={this.state.index}
+          total_batch_size={this.state.total_batch_size}
           batch_size={this.state.batch_size}
-          image={this.state.images[this.state.index]}
+          image={this.state.image}
           onAcceptClick={this.onAcceptClick}
           onRejectClick={this.onRejectClick}
           onSkipClick={this.onSkipClick}
           onBackClick={this.onBackClick}
+          time={this.state.time}
         />
       ) : (
         <Button loading={true} />

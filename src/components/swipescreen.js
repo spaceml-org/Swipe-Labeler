@@ -1,28 +1,26 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "../styles.css";
-// import moon from "./tutorial-images/moon.jpg";
-// import flag from "./tutorial-images/flag.jpg";
-// import earthrise from "./tutorial-images/earthrise.jpg";
-// import astronaut from "./tutorial-images/astronaut.jpg";
 import TinderCard from "react-tinder-card";
 import Timer from "./timer";
 import { Button, ProgressBar } from "@blueprintjs/core";
-// import Sparkle from 'react-sparkle'
 import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
-// import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-
+import LoadingImg from "../loading.gif";
+import Loading from "./loading";
 class SwipeScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onSwipe = this.onSwipe.bind(this);
-    this.onKeyPress = this.onKeyPress.bind(this);
+    // this.state = {
+    //   loading: this.props.loading,
+    // };
 
     //bind functions
     this.decideCountText = this.decideCountText.bind(this);
+    this.onSwipe = this.onSwipe.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
   }
   componentWillMount() {
     // Listens for the keyboard key press events. (Uses "keyup" so the button is only pressed once per choice.)
@@ -37,6 +35,9 @@ class SwipeScreen extends React.Component {
 
   onSwipe = (direction) => {
     // From TinderCard
+    this.setState({
+      loading: true,
+    });
     if (direction === "right") {
       this.props.onAcceptClick();
     } else if (direction === "left") {
@@ -60,10 +61,14 @@ class SwipeScreen extends React.Component {
   decideCountText() {
     //Helper function to render progress of correct width on the progress bar
     let text = "";
-    let x = this.props.batch_size - this.props.index;
-    if (x !== 1) text = x + " Images Left!";
-    else text = x + " Image Left!";
-    return [text, this.props.index / this.props.batch_size];
+    let y = this.props.batch_size;
+    // let x = this.props.total_batch_size - this.props.batch_size;
+    if (y !== 1) text = y + " Images Left!";
+    else text = y + " Image Left!";
+    return [
+      text,
+      this.props.index / (this.props.batch_size + this.props.index),
+    ];
   }
 
   detectMob() {
@@ -94,17 +99,28 @@ class SwipeScreen extends React.Component {
         </TinderCard>
       );
     } else {
+      // if (this.state.loading) {
+      //   obj = <Loading img={LoadingImg} />;
+      //   return obj;
+      // }
       obj = (
         <TinderCard
           onSwipe={this.onSwipe}
           preventSwipe={["right", "left", "down", "up"]}
+          // preventSwipe={["up"]}
         >
           <TransformWrapper
             options={{ centerContent: true }}
             defaultPositionX={50}
           >
             <TransformComponent>
+              {/* {let {tinderImage} = {this.props.imgUrls}} */}
               <img src={this.props.image} alt="" />
+              {/* <img src={this.props.image.url} alt="" /> */}
+              {/* <div
+                style={{ backgroundImage: "url(" + this.props.image + ")" }}
+                className="image"
+              ></div> */}
             </TransformComponent>
           </TransformWrapper>
         </TinderCard>
@@ -118,8 +134,7 @@ class SwipeScreen extends React.Component {
     let obj = this.decideImgRender();
     return (
       <>
-        {console.log(this.detectMob())}
-        {console.log("props= ", this.props)}
+        {console.log("swipscreen props= ", this.props)}
         <div className="header">
           <div className="count">
             <div className="timer">

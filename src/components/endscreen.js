@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "../styles.css";
 import astronaut from "../tutorial-images/astronaut.jpg";
-import { Button, ProgressBar } from "@blueprintjs/core";
+import { Button } from "@blueprintjs/core";
 import Confetti from "react-confetti";
 import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
@@ -25,15 +25,12 @@ class EndScreen extends React.Component {
   }
 
   getSwipeTime() {
-    // return document.cookie
-    //   .split(";")
-    //   .some((item) => item.trim().startsWith("swipeTime="));
     let time;
     let decoded = decodeURIComponent(document.cookie);
     decoded.split(";").forEach((item) => {
       if (item.trim().startsWith("swipeTime")) time = item.trim().split("=")[1];
     });
-    console.log("time= ", time);
+    // console.log("time= ", time);
     return time;
   }
 
@@ -47,9 +44,7 @@ class EndScreen extends React.Component {
             backgroundImage: "url('" + astronaut + "')",
           }}
         >
-          {/* {console.log("time:", this.getSwipeTime())} */}
           <div className="EndScreen_Text">Mission accomplished! Good job!</div>
-          {/* <Sparkle /> */}
           <div className="EndScreen_Time_Text">
             Your labelling time: {this.getSwipeTime()} seconds...
           </div>
