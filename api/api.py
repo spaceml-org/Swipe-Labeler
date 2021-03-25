@@ -36,13 +36,10 @@ def create_app(batch_size, path_for_unlabeled):
     app.config['path_for_unlabeled'] = path_for_unlabeled 
 
     # Create a temp folder, if it doesnt exist
-    temp_folder_path = os.path.dirname(path_for_unlabeled) + "\\temp"
-    if not os.path.exists(temp_folder_path):
-        os.mkdir(temp_folder_path)
-    else:
-        shutil.rmtree(temp_folder_path)
-        os.mkdir(temp_folder_path)
-    app.config['temp'] = temp_folder_path
+    app.config["temp"] = os.path.join(Path(path_for_unlabeled).resolve().parent,'media')
+    if os.path.exists(app.config["temp"]):
+        shutil.rmtree(app.config["temp"])
+    os.mkdir(app.config["temp"])
 
     # This is the path_for_unlabeled folder that is passed in as an argument when starting this script.
     orig_images_path = app.config['path_for_unlabeled']
