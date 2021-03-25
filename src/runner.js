@@ -35,7 +35,6 @@ export default class App extends React.Component {
     };
 
     // bind functions
-    this.fetchImages = this.fetchImages.bind(this);
     this.fetchImage = this.fetchImage.bind(this);
     this.sendSelection = this.sendSelection.bind(this);
     this.onAcceptClick = this.onAcceptClick.bind(this);
@@ -44,25 +43,24 @@ export default class App extends React.Component {
     this.onBackClick = this.onBackClick.bind(this);
     this.endTutorial = this.endTutorial.bind(this);
     this.setLoading = this.setLoading.bind(this);
-    this.generateImages = this.generateImages.bind(this);
     this.getBatchSize = this.getBatchSize.bind(this);
   }
 
-    componentDidMount() {
+  componentDidMount() {
     // When the app loads,get the batch size and then get all the image urls from flask.
-    this.getBatchSize();
-    // this.getTotalBatchSize();
+    // this.getBatchSize();
+    // this.getBatchSize();
     this.fetchImage();
   }
 
-  getTotalBatchSize() {
+  getBatchSize() {
     axios
       .get("/getsize")
       .then((res) => {
         console.log("response = ", res.data.batch_size);
         this.setState(
           {
-            total_batch_size: res.data.batch_size,
+            batch_size: res.data.batch_size,
           },
           () => {
             console.log("got total batch state as: ", this.state.batch_size);
@@ -71,8 +69,6 @@ export default class App extends React.Component {
       })
       .catch((err) => console.log("ERROR: ", err));
   }
-
-  
 
   fetchImage() {
     // Collect one image url from flask
@@ -96,27 +92,6 @@ export default class App extends React.Component {
       .catch((err) => console.log("ERROR: ", err));
   }
 
-  fetchImages() {
-    // Collect the list of image urls to request one by one later.
-
-    fetch("/images/" + this.state.index)
-      .then((res) => res.json())
-      .then((data) => {
-        this.setState({
-          images: data.images,
-          batch_size: data.images.length,
-          index: 0,
-          loading: false,
-        });
-        if (!data.images.length)
-          this.setState({
-            view: "end",
-          });
-      });
-    }
-  }
-
-  
   setLoading(s) {
     console.log("reached ");
     this.setState({
@@ -197,7 +172,7 @@ export default class App extends React.Component {
       body = this.state.image ? (
         <SwipeScreen
           index={this.state.index}
-          total_batch_size={this.state.total_batch_size}
+          // total_batch_size={this.state.total_batch_size}
           batch_size={this.state.batch_size}
           image={this.state.image}
           onAcceptClick={this.onAcceptClick}
