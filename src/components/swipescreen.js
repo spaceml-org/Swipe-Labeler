@@ -64,7 +64,9 @@ class SwipeScreen extends React.Component {
     let y = this.props.batch_size;
     // let x = this.props.total_batch_size - this.props.batch_size;
     if (y !== 1) text = y + " Images Left!";
+    if (y == 0) text = "0 Images Left" + "\n" + "Perform an action to end!";
     else text = y + " Image Left!";
+
     return [
       text,
       this.props.index / (this.props.batch_size + this.props.index),

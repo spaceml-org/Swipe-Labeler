@@ -39,6 +39,9 @@ def create_app(batch_size, path_for_unlabeled):
     temp_folder_path = os.path.dirname(path_for_unlabeled) + "\\temp"
     if not os.path.exists(temp_folder_path):
         os.mkdir(temp_folder_path)
+    else:
+        shutil.rmtree(temp_folder_path)
+        os.mkdir(temp_folder_path)
     app.config['temp'] = temp_folder_path
 
     # This is the path_for_unlabeled folder that is passed in as an argument when starting this script.
