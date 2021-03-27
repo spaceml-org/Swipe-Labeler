@@ -36,7 +36,7 @@ def create_app(batch_size, path_for_unlabeled):
     app.config['path_for_unlabeled'] = path_for_unlabeled 
 
     # Create a temp folder, if it doesnt exist
-    app.config["temp"] = os.path.join(Path(path_for_unlabeled).resolve().parent,'media')
+    app.config["temp"] = os.path.join(Path(path_for_unlabeled).resolve().parent,'temp')
     if os.path.exists(app.config["temp"]):
         shutil.rmtree(app.config["temp"])
     os.mkdir(app.config["temp"])
@@ -91,15 +91,26 @@ def index():
     print("testing")
     return render_template('index.html')
 
-@app.route('/image')
-def list_image_url():
+@app.route('/image',defaults={'remainder_image': None})
+@app.route('/image/<remainder_image>')
+def list_image_url(remainder_image):
+    # Servers images by moving them from unlabeled to temp
+    # if unlabeled is empty , checks in temp for leftover unlabeled images
     # Checks the unlabeled directory, picks a random image , returns its url and moves the image to a temp folder
     src = app.config["path_for_unlabeled"]
     image = None
     if ( os.listdir(src) ):
         image = random.choice(os.listdir(src))
     if not image:
-        return {"image":"none"}
+        # check in temp for any leftover images  (occurs when undoing an image, ie, the currently served img remains in temp)
+        if(os.listdir(app.config["temp"])):
+            # Pick a random file from temp to display 
+            image = random.choice(os.listdir(app.config["temp"]))
+            image_path = os.path.join(app.config["temp"],image)
+            msg = None
+            return {"image":"/media/"+image , "path":image_path , "msg":msg}
+        else:
+            return {"image":"none", "path":"none", "msg":"none"}
     # Move current file to temp folder
     image_path = os.path.join(src,image)
     msg = shutil.move(image_path,app.config["temp"])
@@ -265,6 +276,45 @@ def submit_label():
                 shutil.move(old_path, unsure_path)
 
     return {'status': 'success'}
+
+@app.route('/undo', methods=['POST'])
+def undo_swipe():
+
+    # Moves the requested image from labeled to temp
+    # Checks in the Labeled folder to retrieve requested image. 
+    image_url = request.get_json()['image_url']
+    curr_image_url = request.get_json()['curr_image_url']
+    # This line cuts off the '/media/' at the start of the image_url from request.
+    image_name = image_url[7:]
+    curr_image_name = curr_image_url[7:]
+    # Get the path of Labeled folder and its sub-folders
+    parent_directory = os.path.dirname(app.config['path_for_unlabeled'])
+    labeled_folder = os.path.join(str(parent_directory), 'Labeled')
+    labeled_positive = os.path.join(labeled_folder, 'Labeled_Positive')
+    labeled_negative = os.path.join(labeled_folder, 'Labeled_Negative')
+    unsure = os.path.join(labeled_folder, 'Unsure')
+    # Define paths for sub-folder/image
+    pos_path = os.path.join(labeled_positive, image_name)
+    neg_path = os.path.join(labeled_negative, image_name)
+    unsure_path = os.path.join(unsure,image_name)
+    # Search and transfer requested image to temp folder for serving in future
+    # dest_path = os.path.join(app.config['path_for_unlabeled'],image_name)
+    dest_path = os.path.join(app.config['temp'],image_name)
+    curr_img_path = os.path.join(app.config["temp"],curr_image_name)
+    #Move the currently served image ( ie, before hitting undo button) from temp to remainder_folder to show later
+    # shutil.move(curr_img_path,os.path.join(app.config['remainder'],curr_image_name))
+    # Search and transfer requested image to temp folder for serving in future
+    if (os.path.exists(pos_path)):
+        shutil.move(pos_path,dest_path)
+    elif (os.path.exists(neg_path)):
+        shutil.move(neg_path,dest_path)
+    elif (os.path.exists(unsure_path)):
+        shutil.move(unsure_path,dest_path)
+    else:
+        return {'msg':"ERROR!"}
+    return {"status":"success",}
+
+
 
 @app.route('/end', methods=['GET', 'POST'])
 def end_app():

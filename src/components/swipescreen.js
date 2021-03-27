@@ -63,8 +63,8 @@ class SwipeScreen extends React.Component {
     let text = "";
     let y = this.props.batch_size;
     // let x = this.props.total_batch_size - this.props.batch_size;
-    if (y !== 1) text = y + " Images Left!";
-    if (y == 0) text = "0 Images Left" + "\n" + "Perform an action to end!";
+    if (y !== 1) text = y + 1 + " Images Left!";
+    if (y == 0) text = "Last Image!";
     else text = y + " Image Left!";
 
     return [
@@ -91,6 +91,9 @@ class SwipeScreen extends React.Component {
 
   decideImgRender() {
     let obj;
+    // this.props.undoHappened
+    //   ? (img = this.props.imgUrls[this.props.index])
+    //   : (img = this.props.img);
     if (this.detectMob()) {
       obj = (
         <TinderCard
@@ -98,6 +101,7 @@ class SwipeScreen extends React.Component {
           preventSwipe={["right", "left", "down", "up"]}
         >
           <img src={this.props.image} alt="" />
+          {/* <img src={img} alt="" /> */}
         </TinderCard>
       );
     } else {
@@ -118,6 +122,7 @@ class SwipeScreen extends React.Component {
             <TransformComponent>
               {/* {let {tinderImage} = {this.props.imgUrls}} */}
               <img src={this.props.image} alt="" />
+              {/* <img src={img} alt="" /> */}
               {/* <img src={this.props.image.url} alt="" /> */}
               {/* <div
                 style={{ backgroundImage: "url(" + this.props.image + ")" }}
@@ -143,7 +148,7 @@ class SwipeScreen extends React.Component {
               <Timer />
             </div>
             <div className="ct-grp">
-              <span>Batch Total: {this.props.batch_size}</span>
+              <span>Batch Total: {this.props.batch_size + 1}</span>
               <br></br>
               <span>{count_text}</span>
               {console.log("x= ", x)}

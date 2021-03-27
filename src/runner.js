@@ -31,6 +31,7 @@ export default class App extends React.Component {
       total_batch_size: null,
       batch_size: null,
       imgUrls: [],
+      undoHappened: false,
       // loading: false,
     };
 
@@ -72,6 +73,8 @@ export default class App extends React.Component {
 
   fetchImage() {
     // Collect one image url from flask
+
+    console.log("reached!");
     axios
       .get("/image")
       .then((res) => {
@@ -79,15 +82,21 @@ export default class App extends React.Component {
           this.setState({
             view: "end",
           });
-        else
+        else {
+          let x = this.state.imgUrls;
+          //check if res.data.image is in x before pushing to x
+          x.push(res.data.image);
           this.setState(
             {
               image: res.data.image,
+              imgUrls: x,
             },
             () => {
+              console.log("img ", typeof this.state.image);
               this.getBatchSize();
             }
           );
+        }
       })
       .catch((err) => console.log("ERROR: ", err));
   }
@@ -146,10 +155,26 @@ export default class App extends React.Component {
   }
 
   onBackClick() {
-    this.setState({
-      batch_size: this.state.batch_size + 1,
-      index: this.state.index - 1,
-    });
+    // current image = this.state.imgUrls[this.state.index]
+    // console.log("Request: ", this.state.imgUrls[this.state.index - 1]);
+    // add the image which is going to be undone to url stack and request the same image from flask
+    let x = this.state.imgUrls;
+    x.push(this.state.imgUrls[this.state.index - 1]);
+    axios
+      .post("/undo", {
+        image_url: this.state.imgUrls[this.state.index - 1],
+        curr_image_url: this.state.imgUrls[this.state.index],
+      })
+      .then((res) => {
+        console.log(res);
+        this.setState({
+          batch_size: this.state.batch_size + 1,
+          index: this.state.index + 1,
+          image: this.state.imgUrls[this.state.index - 1],
+          imgUrls: x,
+        });
+      })
+      .catch((err) => console.log("ERROR: ", err));
   }
 
   endTutorial() {
@@ -172,7 +197,10 @@ export default class App extends React.Component {
       body = this.state.image ? (
         <SwipeScreen
           index={this.state.index}
-          // total_batch_size={this.state.total_batch_size}
+          // undoHappened={this.state.undoHappened}
+          // // total_batch_size={this.state.total_batch_size}
+          // imgUrls={this.state.imgUrls}
+          // index={this.state.index}
           batch_size={this.state.batch_size}
           image={this.state.image}
           onAcceptClick={this.onAcceptClick}
