@@ -340,6 +340,19 @@ def undo_swipe():
         return {'msg':"ERROR!"}
     return {"status":"success",}
 
+@app.route('/quit',methods=['POST'])
+def quit_app():
+    msg = None
+    # Transfer the request image from temp to unlabeled folder
+    image_url = request.get_json()['image_url']
+    # This line cuts off the '/media/' at the start of the image_url from request.
+    image_name = image_url[7:]
+    src = os.path.join(app.config['temp'],image_name)
+    dest = os.path.join(app.config['path_for_unlabeled'],image_name)
+    msg = shutil.move(src,dest)
+
+    return {'status':'success','msg':msg}
+
 
 
 @app.route('/end', methods=['GET', 'POST'])

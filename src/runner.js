@@ -48,6 +48,7 @@ export default class App extends React.Component {
     this.onRejectClick = this.onRejectClick.bind(this);
     this.onSkipClick = this.onSkipClick.bind(this);
     this.onBackClick = this.onBackClick.bind(this);
+    this.onQuitClick = this.onQuitClick.bind(this);
     this.endTutorial = this.endTutorial.bind(this);
     this.setLoading = this.setLoading.bind(this);
     this.getBatchSize = this.getBatchSize.bind(this);
@@ -254,6 +255,21 @@ export default class App extends React.Component {
       .catch((err) => console.log("ERROR: ", err));
   }
 
+  onQuitClick() {
+    //Send the current image to path for unlabeled
+    axios
+      .post("/quit", {
+        image_url: this.state.curr_image_url,
+      })
+      .then((res) => {
+        console.log(res);
+        this.setState({
+          view: "end",
+        });
+      })
+      .catch((err) => console.log("ERROR: ", err));
+  }
+
   endTutorial() {
     this.setState({
       view: "active",
@@ -284,6 +300,7 @@ export default class App extends React.Component {
           onRejectClick={this.onRejectClick}
           onSkipClick={this.onSkipClick}
           onBackClick={this.onBackClick}
+          onQuitClick={this.onQuitClick}
           time={this.state.time}
           batchStop={this.state.batchStop}
           noOfSwipes={this.state.noOfSwipes}

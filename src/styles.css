@@ -62,6 +62,15 @@ body {
   border-radius: 5px;
 }
 
+.quit-button {
+  margin-left: 1.5rem;
+  width: fit-content;
+  /* padding: 3px; */
+  box-sizing: border-box;
+  /* border: solid 2px black; */
+  /* border-radius: 5px; */
+}
+
 img {
   max-width: 50vw;
   max-height: 60vh;
