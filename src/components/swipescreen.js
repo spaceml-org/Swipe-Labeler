@@ -22,14 +22,18 @@ class SwipeScreen extends React.Component {
     this.onSwipe = this.onSwipe.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
   }
-  componenetDidMount() {
-    //feed the total batch size to state on mount
-    this.setState({
-      batchTotal: this.props.batch_size,
-    });
-  }
+  // componenetDidMount() {
+  //   //feed the total batch size to state on mount
+  //   console.log("reached swipescreen mounting!");
+  //   this.setState({
+  //     batchTotal: this.props.batch_size,
+  //   });
+  // }
   componentWillMount() {
     // Listens for the keyboard key press events. (Uses "keyup" so the button is only pressed once per choice.)
+    // this.setState({
+    //   batchTotal: this.props.batch_size,
+    // });
     document.addEventListener("keyup", this.onKeyPress, false);
   }
 
@@ -66,12 +70,21 @@ class SwipeScreen extends React.Component {
 
   decideCountText() {
     //Helper function to render progress of correct width on the progress bar
+
+    // if (this.props.noOfSwipes === 0) {
+    //   this.setState({
+    //     batch_size: this.props.batch_size,
+    //   });
+    // }
     let text = "";
-    let y = this.props.batchStop - this.props.noOfSwipes - 1;
+    // let y = this.props.batchStop - this.props.noOfSwipes - 1;
+    let y = this.props.batch_size;
     // let x = this.props.total_batch_size - this.props.batch_size;
-    // if (y == 0) text = "Last Image!";
+    if (y == 0) {
+      text = "Last Image!";
+      return [text, this.props.noOfSwipes / this.props.batchStop];
+    }
     if (y !== 1) text = y + " Images Left!";
-    // else if (y == 0) text = "Last Image!";
     else text = y + " Image Left!";
     return [text, this.props.noOfSwipes / this.props.batchStop];
   }
@@ -154,7 +167,7 @@ class SwipeScreen extends React.Component {
               {/* <span>Dataset Total: {this.props.batch_size + 1}</span> */}
               <span>
                 {/* Dataset Total: {this.props.batch_size + this.props.noOfSwipes} */}
-                Dataset Total: {this.state.batchTotal}
+                Dataset Total: {this.props.total_batch_size}
               </span>
               <br></br>
               <span>{count_text}</span>

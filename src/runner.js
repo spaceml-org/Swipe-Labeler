@@ -28,7 +28,7 @@ export default class App extends React.Component {
       view: hasSeenTutorial() ? "active" : "tutorial",
       index: 0,
       image: null,
-      // total_batch_size: null,
+      total_batch_size: null,
       batch_size: null,
       imgUrls: [],
       undoUrls: [],
@@ -56,8 +56,25 @@ export default class App extends React.Component {
   componentDidMount() {
     // When the app loads,get the batch size and then get all the image urls from flask.
     // this.getBatchSize();
-    // this.getBatchSize();
+    this.getTotalBatchSize();
     this.fetchImage();
+  }
+
+  getTotalBatchSize() {
+    axios
+      .get("/getsize")
+      .then((res) => {
+        console.log("response = ", res.data.batch_size);
+        this.setState(
+          {
+            total_batch_size: res.data.batch_size,
+          },
+          () => {
+            console.log("got total batch state as: ", this.state.batch_size);
+          }
+        );
+      })
+      .catch((err) => console.log("ERROR: ", err));
   }
 
   getBatchSize() {
@@ -258,7 +275,7 @@ export default class App extends React.Component {
         <SwipeScreen
           index={this.state.index}
           undoHappened={this.state.undoHappened}
-          // // total_batch_size={this.state.total_batch_size}
+          total_batch_size={this.state.total_batch_size}
           // imgUrls={this.state.imgUrls}
           // index={this.state.index}
           batch_size={this.state.batch_size}
