@@ -28,10 +28,16 @@ export default class App extends React.Component {
       view: hasSeenTutorial() ? "active" : "tutorial",
       index: 0,
       image: null,
-      total_batch_size: null,
+      // total_batch_size: null,
       batch_size: null,
       imgUrls: [],
-      undoHappened: false,
+      undoUrls: [],
+      // curr_image_url: "none",
+      undoHappened: true,
+      noOfSwipes: 0,
+      batchStop: 5,
+      leftBehind: 0,
+      // swipes: 1,
       // loading: false,
     };
 
@@ -73,12 +79,20 @@ export default class App extends React.Component {
 
   fetchImage() {
     // Collect one image url from flask
-
-    console.log("reached!");
+    let url;
+    if (this.state.leftBehind != 0) {
+      url = this.state.undoUrls.pop();
+      this.setState({
+        leftBehind: this.state.leftBehind - 1,
+      });
+    } else url = "none";
     axios
-      .get("/image")
+      .post("/image", {
+        swipes: this.state.swipes + 1 || 0,
+        image_url: url || "none",
+      })
       .then((res) => {
-        if (res.data.image == "none")
+        if (res.data.image === "none")
           this.setState({
             view: "end",
           });
@@ -86,10 +100,17 @@ export default class App extends React.Component {
           let x = this.state.imgUrls;
           //check if res.data.image is in x before pushing to x
           x.push(res.data.image);
+          let url = this.state.imgUrls[this.state.index]
+            ? this.state.imgUrls[this.state.index]
+            : "none";
+          let s = this.state.noOfSwipes + this.state.leftBehind;
           this.setState(
             {
               image: res.data.image,
               imgUrls: x,
+              curr_image_url: url,
+              swipes: s,
+              // siwpes: s,
             },
             () => {
               console.log("img ", typeof this.state.image);
@@ -124,34 +145,67 @@ export default class App extends React.Component {
   onAcceptClick() {
     // Send the positive label to flask, make call to /image to get the next image from flask
     // and update the index so the next image will show.
-    this.setState({
-      batch_size: this.state.batch_size - 1,
-      index: this.state.index + 1,
-    });
-    this.sendSelection(1);
-    this.fetchImage();
+    this.setState(
+      {
+        // batch_size: this.state.batch_size - 1,
+        index: this.state.index + 1,
+        noOfSwipes: this.state.noOfSwipes + 1,
+        swipes: this.state.noOfSwipes + this.state.leftBehind,
+        undoHappened: false,
+      },
+      () => {
+        this.sendSelection(1);
+        if (this.state.noOfSwipes === this.state.batchStop)
+          this.setState({
+            view: "end",
+          });
+        else this.fetchImage();
+      }
+    );
   }
 
   onSkipClick() {
     // Send no label to flask, mark as ambigous with constant value 10
     // and update the index so the next image will show.
-    this.setState({
-      batch_size: this.state.batch_size - 1,
-      index: this.state.index + 1,
-    });
-    this.sendSelection(2);
-    this.fetchImage();
+    this.setState(
+      {
+        // batch_size: this.state.batch_size - 1,
+        index: this.state.index + 1,
+        noOfSwipes: this.state.noOfSwipes + 1,
+        swipes: this.state.noOfSwipes + this.state.leftBehind,
+        undoHappened: false,
+      },
+      () => {
+        this.sendSelection(2);
+        if (this.state.noOfSwipes === this.state.batchStop)
+          this.setState({
+            view: "end",
+          });
+        else this.fetchImage();
+      }
+    );
   }
 
   onRejectClick() {
     // Send the negative label to flask,
     // and update the index so the next image will show.
-    this.setState({
-      batch_size: this.state.batch_size - 1,
-      index: this.state.index + 1,
-    });
-    this.sendSelection(0);
-    this.fetchImage();
+    this.setState(
+      {
+        // batch_size: this.state.batch_size - 1,
+        index: this.state.index + 1,
+        noOfSwipes: this.state.noOfSwipes + 1,
+        swipes: this.state.noOfSwipes + this.state.leftBehind,
+        undoHappened: false,
+      },
+      () => {
+        this.sendSelection(0);
+        if (this.state.noOfSwipes === this.state.batchStop)
+          this.setState({
+            view: "end",
+          });
+        else this.fetchImage();
+      }
+    );
   }
 
   onBackClick() {
@@ -159,7 +213,9 @@ export default class App extends React.Component {
     // console.log("Request: ", this.state.imgUrls[this.state.index - 1]);
     // add the image which is going to be undone to url stack and request the same image from flask
     let x = this.state.imgUrls;
+    let y = this.state.undoUrls;
     x.push(this.state.imgUrls[this.state.index - 1]);
+    y.push(this.state.imgUrls[this.state.index]);
     axios
       .post("/undo", {
         image_url: this.state.imgUrls[this.state.index - 1],
@@ -168,10 +224,14 @@ export default class App extends React.Component {
       .then((res) => {
         console.log(res);
         this.setState({
-          batch_size: this.state.batch_size + 1,
+          // batch_size: this.state.batch_size + 1,
           index: this.state.index + 1,
           image: this.state.imgUrls[this.state.index - 1],
           imgUrls: x,
+          undoUrls: y,
+          noOfSwipes: this.state.noOfSwipes - 1,
+          leftBehind: this.state.leftBehind + 1,
+          undoHappened: true,
         });
       })
       .catch((err) => console.log("ERROR: ", err));
@@ -197,7 +257,7 @@ export default class App extends React.Component {
       body = this.state.image ? (
         <SwipeScreen
           index={this.state.index}
-          // undoHappened={this.state.undoHappened}
+          undoHappened={this.state.undoHappened}
           // // total_batch_size={this.state.total_batch_size}
           // imgUrls={this.state.imgUrls}
           // index={this.state.index}
@@ -208,11 +268,16 @@ export default class App extends React.Component {
           onSkipClick={this.onSkipClick}
           onBackClick={this.onBackClick}
           time={this.state.time}
+          batchStop={this.state.batchStop}
+          noOfSwipes={this.state.noOfSwipes}
         />
       ) : (
         <Button loading={true} />
       );
-    else if (this.state.view === "end") body = <EndScreen />;
+    else if (this.state.view === "end") {
+      if (this.state.batch_size <= 0) body = <EndScreen />;
+      else body = <EndScreen continue={true} />;
+    }
     return <div className="App">{body}</div>;
   }
 }

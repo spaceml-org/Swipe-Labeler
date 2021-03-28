@@ -13,14 +13,20 @@ class SwipeScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    // this.state = {
-    //   loading: this.props.loading,
-    // };
+    this.state = {
+      batchTotal: this.props.batch_size,
+    };
 
     //bind functions
     this.decideCountText = this.decideCountText.bind(this);
     this.onSwipe = this.onSwipe.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
+  }
+  componenetDidMount() {
+    //feed the total batch size to state on mount
+    this.setState({
+      batchTotal: this.props.batch_size,
+    });
   }
   componentWillMount() {
     // Listens for the keyboard key press events. (Uses "keyup" so the button is only pressed once per choice.)
@@ -61,16 +67,13 @@ class SwipeScreen extends React.Component {
   decideCountText() {
     //Helper function to render progress of correct width on the progress bar
     let text = "";
-    let y = this.props.batch_size;
+    let y = this.props.batchStop - this.props.noOfSwipes - 1;
     // let x = this.props.total_batch_size - this.props.batch_size;
-    if (y !== 1) text = y + 1 + " Images Left!";
-    if (y == 0) text = "Last Image!";
+    // if (y == 0) text = "Last Image!";
+    if (y !== 1) text = y + " Images Left!";
+    // else if (y == 0) text = "Last Image!";
     else text = y + " Image Left!";
-
-    return [
-      text,
-      this.props.index / (this.props.batch_size + this.props.index),
-    ];
+    return [text, this.props.noOfSwipes / this.props.batchStop];
   }
 
   detectMob() {
@@ -148,7 +151,11 @@ class SwipeScreen extends React.Component {
               <Timer />
             </div>
             <div className="ct-grp">
-              <span>Batch Total: {this.props.batch_size + 1}</span>
+              {/* <span>Dataset Total: {this.props.batch_size + 1}</span> */}
+              <span>
+                {/* Dataset Total: {this.props.batch_size + this.props.noOfSwipes} */}
+                Dataset Total: {this.state.batchTotal}
+              </span>
               <br></br>
               <span>{count_text}</span>
               {console.log("x= ", x)}
@@ -190,7 +197,7 @@ class SwipeScreen extends React.Component {
             </Button>
             <Button
               icon="undo"
-              disabled={this.props.index === 0}
+              disabled={this.props.undoHappened}
               className="BackButton"
               onClick={this.props.onBackClick}
             >

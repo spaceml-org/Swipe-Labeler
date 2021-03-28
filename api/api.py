@@ -19,7 +19,7 @@ parser.add_argument('--path_for_unsure_labels',type=str,
                     help='folder with images labeled unsure')
 
 args = parser.parse_args()
-batch_size = args.batch_size
+batch_size = args.batch_size or 5
 path_for_unlabeled = args.path_for_unlabeled
 path_for_pos = args.path_for_pos_labels
 path_for_neg = args.path_for_neg_labels
@@ -91,31 +91,57 @@ def index():
     print("testing")
     return render_template('index.html')
 
-@app.route('/image',defaults={'remainder_image': None})
-@app.route('/image/<remainder_image>')
-def list_image_url(remainder_image):
-    # Servers images by moving them from unlabeled to temp
-    # if unlabeled is empty , checks in temp for leftover unlabeled images
+#@app.route('/image',defaults={'swipes': 0})
+# @app.route('/image/<swipes>')
+@app.route('/image',methods=['POST'])
+def list_image_url():
+    # Servers images by moving them from unlabeled to temp or directly serves from temp
+    # Checks if there are images in temp to be served otherwise:
     # Checks the unlabeled directory, picks a random image , returns its url and moves the image to a temp folder
-    src = app.config["path_for_unlabeled"]
-    image = None
-    if ( os.listdir(src) ):
-        image = random.choice(os.listdir(src))
-    if not image:
+
+    # Parsing request data
+    swipes = request.get_json()['swipes']
+    image_url = request.get_json()['image_url']
+    if image_url != "none":
+        # This line cuts off the '/media/' at the start of the image_url from request.
+        image_name = image_url[7:]
+ 
+    if int(swipes) >= batch_size :
         # check in temp for any leftover images  (occurs when undoing an image, ie, the currently served img remains in temp)
         if(os.listdir(app.config["temp"])):
-            # Pick a random file from temp to display 
-            image = random.choice(os.listdir(app.config["temp"]))
-            image_path = os.path.join(app.config["temp"],image)
-            msg = None
-            return {"image":"/media/"+image , "path":image_path , "msg":msg}
+            # Pick requested file from temp to display
+            if image_name in os.listdir(app.config["temp"]):
+                # image = random.choice(os.listdir(app.config["temp"]))
+                image_path = os.path.join(app.config["temp"],image_name)
+                msg = None
+                return {"image":"/media/"+image_name , "path":image_path , "msg":msg,"swipes":swipes}
+            else:
+                return {"image":"none", "path":"none", "msg":"none","swipes":swipes}    
         else:
-            return {"image":"none", "path":"none", "msg":"none"}
+            return {"image":"none", "path":"none", "msg":"none","swipes":swipes}
+    elif (image_url != "none"):
+        # Pick requested file from temp to display
+        if image_name in os.listdir(app.config["temp"]):
+            # image = random.choice(os.listdir(app.config["temp"]))
+            image_path = os.path.join(app.config["temp"],image_name)
+            msg = None
+            return {"image":"/media/"+image_name , "path":image_path , "msg":msg,"swipes":swipes}
+        else:
+            return {"image":"none", "path":"none", "msg":"none","swipes":swipes}
+        
+    else:
+        src = app.config["path_for_unlabeled"]
+        image = None
+        if ( len(os.listdir(src)) ):
+            image = random.choice(os.listdir(src))
+        else:
+            return {"image":"none", "path":"none", "msg":"none","swipes":swipes} 
+
     # Move current file to temp folder
     image_path = os.path.join(src,image)
     msg = shutil.move(image_path,app.config["temp"])
 
-    return {"image":"/media/"+image , "path":image_path , "msg":msg}
+    return {"image":"/media/"+image , "path":image_path , "msg":msg ,"swipes":int(swipes)}
 
 @app.route('/getsize')
 def give_size():

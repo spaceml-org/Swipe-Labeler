@@ -11,6 +11,8 @@ class EndScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
+    //bind functions
+    this.decideContinue = this.decideContinue.bind(this);
   }
   sendEnd() {
     // When the user clicks end,
@@ -34,7 +36,26 @@ class EndScreen extends React.Component {
     return time;
   }
 
+  decideContinue() {
+    let obj;
+    if (this.props.continue)
+      obj = (
+        <Button
+          icon="label"
+          className="EndScreenButton"
+          intent="primary"
+          text={true}
+          onClick={() => window.location.reload()}
+        >
+          Continue Labelling
+        </Button>
+      );
+    else obj = null;
+    return obj;
+  }
+
   render() {
+    let obj = this.decideContinue();
     return (
       <>
         <Confetti />
@@ -48,10 +69,11 @@ class EndScreen extends React.Component {
           <div className="EndScreen_Time_Text">
             Your labelling time: {this.getSwipeTime()} seconds...
           </div>
+          {obj}
           <Button
-            icon="tick"
-            className="AcceptRejectButton"
-            intent="success"
+            icon="stop"
+            className="EndScreenButton"
+            intent="danger"
             onClick={this.sendEnd}
           >
             Close

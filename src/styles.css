@@ -102,6 +102,12 @@ img {
   margin: 20px;
 }
 
+.EndScreenButton {
+  /* display: inline-block; */
+  margin-right: 5px;
+  margin: 5px auto;
+}
+
 .TutorialScreen_Question_Image {
   height: 500px;
   background-size: cover;
