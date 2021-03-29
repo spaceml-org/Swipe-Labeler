@@ -2,7 +2,7 @@ import React from "react";
 import "../styles.css";
 import TinderCard from "react-tinder-card";
 import Timer from "./timer";
-import { Button, ProgressBar } from "@blueprintjs/core";
+import { Button, ProgressBar, Icon } from "@blueprintjs/core";
 import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
@@ -174,6 +174,15 @@ class SwipeScreen extends React.Component {
               {console.log("x= ", x)}
               <br></br>
             </div>
+            <Button
+              className="quit-button"
+              intent="danger"
+              // disabled={this.props.undoHappened}
+              onClick={this.props.onQuitClick}
+              small={true}
+            >
+              <Icon icon="cross" iconSize={20} intent="danger" />{" "}
+            </Button>
           </div>
         </div>
         <div id="#SwipeScreen" className="Content">
@@ -216,6 +225,14 @@ class SwipeScreen extends React.Component {
             >
               Undo
             </Button>
+            {/* <Button
+              className="AcceptRejectButton"
+              intent="danger"
+              disabled={this.props.undoHappened}
+              onClick={this.props.onQuitClick}
+            >
+              <Icon icon="cross" iconSize={25} intent="danger" />{" "}
+            </Button> */}
           </div>
         </div>
       </>

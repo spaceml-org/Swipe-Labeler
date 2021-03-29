@@ -256,10 +256,21 @@ export default class App extends React.Component {
   }
 
   onQuitClick() {
-    //Send the current image to path for unlabeled
+    //Send the current image to unlabeled
+    // If undo stack has a url, send that as well to unlabeled
+    let image_url, curr_image_url;
+    if (this.state.undoHappened) {
+      image_url = this.state.image;
+      curr_image_url = this.state.undoUrls[0];
+    } else {
+      image_url = this.state.curr_image_url;
+      curr_image_url = "none";
+    }
+
     axios
       .post("/quit", {
-        image_url: this.state.curr_image_url,
+        image_url: image_url,
+        curr_image_url: curr_image_url,
       })
       .then((res) => {
         console.log(res);
