@@ -21,6 +21,7 @@ class SwipeScreen extends React.Component {
     this.decideCountText = this.decideCountText.bind(this);
     this.onSwipe = this.onSwipe.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
+    this.handleShare = this.handleShare.bind(this);
   }
   // componenetDidMount() {
   //   //feed the total batch size to state on mount
@@ -30,10 +31,6 @@ class SwipeScreen extends React.Component {
   //   });
   // }
   componentWillMount() {
-    // Listens for the keyboard key press events. (Uses "keyup" so the button is only pressed once per choice.)
-    // this.setState({
-    //   batchTotal: this.props.batch_size,
-    // });
     document.addEventListener("keyup", this.onKeyPress, false);
   }
 
@@ -107,9 +104,6 @@ class SwipeScreen extends React.Component {
 
   decideImgRender() {
     let obj;
-    // this.props.undoHappened
-    //   ? (img = this.props.imgUrls[this.props.index])
-    //   : (img = this.props.img);
     if (this.detectMob()) {
       obj = (
         <TinderCard
@@ -117,7 +111,6 @@ class SwipeScreen extends React.Component {
           preventSwipe={["right", "left", "down", "up"]}
         >
           <img src={this.props.image} alt="" />
-          {/* <img src={img} alt="" /> */}
         </TinderCard>
       );
     } else {
@@ -129,27 +122,32 @@ class SwipeScreen extends React.Component {
         <TinderCard
           onSwipe={this.onSwipe}
           preventSwipe={["right", "left", "down", "up"]}
-          // preventSwipe={["up"]}
         >
           <TransformWrapper
             options={{ centerContent: true }}
             defaultPositionX={50}
           >
             <TransformComponent>
-              {/* {let {tinderImage} = {this.props.imgUrls}} */}
               <img src={this.props.image} alt="" />
-              {/* <img src={img} alt="" /> */}
-              {/* <img src={this.props.image.url} alt="" /> */}
-              {/* <div
-                style={{ backgroundImage: "url(" + this.props.image + ")" }}
-                className="image"
-              ></div> */}
             </TransformComponent>
           </TransformWrapper>
         </TinderCard>
       );
     }
     return obj;
+  }
+
+  handleShare() {
+    let textToCopy = window.location.href;
+    if (this.detectMob()) {
+      //code for mobile
+      textToCopy.select();
+      document.execCommand("copy");
+      alert("Link copied to clipboard!");
+    } else {
+      navigator.clipboard.writeText(textToCopy);
+      alert("Link copied to clipboard!");
+    }
   }
 
   render() {
@@ -164,25 +162,31 @@ class SwipeScreen extends React.Component {
               <Timer />
             </div>
             <div className="ct-grp">
-              {/* <span>Dataset Total: {this.props.batch_size + 1}</span> */}
-              <span>
-                {/* Dataset Total: {this.props.batch_size + this.props.noOfSwipes} */}
-                Dataset Total: {this.props.total_batch_size}
-              </span>
+              <span>Dataset Total: {this.props.total_batch_size}</span>
               <br></br>
               <span>{count_text}</span>
               {console.log("x= ", x)}
               <br></br>
             </div>
-            <Button
-              className="quit-button"
-              intent="danger"
-              // disabled={this.props.undoHappened}
-              onClick={this.props.onQuitClick}
-              small={true}
-            >
-              <Icon icon="cross" iconSize={20} intent="danger" />{" "}
-            </Button>
+            <div className="button-grp">
+              <Button
+                className="quit-button"
+                intent="danger"
+                onClick={this.props.onQuitClick}
+                small={true}
+              >
+                <Icon icon="cross" iconSize={20} intent="danger" />{" "}
+              </Button>
+              <Button
+                className="share-button"
+                intent="primary"
+                small={true}
+                disabled={this.detectMob()}
+                onClick={this.handleShare}
+              >
+                <Icon icon="share" iconSize={20} />
+              </Button>
+            </div>
           </div>
         </div>
         <div id="#SwipeScreen" className="Content">
@@ -225,14 +229,6 @@ class SwipeScreen extends React.Component {
             >
               Undo
             </Button>
-            {/* <Button
-              className="AcceptRejectButton"
-              intent="danger"
-              disabled={this.props.undoHappened}
-              onClick={this.props.onQuitClick}
-            >
-              <Icon icon="cross" iconSize={25} intent="danger" />{" "}
-            </Button> */}
           </div>
         </div>
       </>

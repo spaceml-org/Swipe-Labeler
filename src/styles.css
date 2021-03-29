@@ -37,10 +37,14 @@ body {
   margin: 0 auto;
   justify-content: center;
   align-items: center;
-  transform: translateX(-3.5%);
+  /* transform: translateX(-3.5%); */
+  /* border: 2px solid red; */
 }
 .ct-grp {
   width: fit-content;
+  margin-left: 3rem;
+  margin-right: 3rem;
+  /* border: 2px solid blue; */
 }
 .count span {
   margin: 2.55px;
@@ -54,7 +58,8 @@ body {
 }
 
 .timer {
-  margin-right: 3rem;
+  /* margin-right: 2rem; */
+  /* margin-left: 1rem; */
   width: fit-content;
   padding: 3px;
   box-sizing: border-box;
@@ -62,11 +67,27 @@ body {
   border-radius: 5px;
 }
 
+.button-grp {
+  display: grid;
+  /* justify-content: space-between; */
+  /* border: 2px solid green; */
+  /* margin-right: 2srem; */
+}
+
 .quit-button {
-  margin-left: 1.5rem;
+  margin: 3px auto;
   width: fit-content;
   /* padding: 3px; */
   box-sizing: border-box;
+  /* border: solid 2px black; */
+  /* border-radius: 5px; */
+}
+
+.share-button {
+  margin: 3px auto;
+  /* width: fit-content; */
+  /* padding: 3px; */
+  /* box-sizing: border-box; */
   /* border: solid 2px black; */
   /* border-radius: 5px; */
 }
@@ -112,11 +133,16 @@ img {
 }
 
 .EndScreenButton {
-  /* display: inline-block; */
-  margin-right: 5px;
-  margin: 5px auto;
+  margin: 8px auto;
 }
 
+.endscreen-btn-grp {
+  margin: 8px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .TutorialScreen_Question_Image {
   height: 500px;
   background-size: cover;
@@ -129,7 +155,7 @@ img {
 }
 
 .EndScreen {
-  height: 500px;
+  height: 100%;
   background-size: cover;
 }
 

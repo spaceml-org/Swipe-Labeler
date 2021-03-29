@@ -69,15 +69,17 @@ class EndScreen extends React.Component {
           <div className="EndScreen_Time_Text">
             Your labelling time: {this.getSwipeTime()} seconds...
           </div>
-          {obj}
-          <Button
-            icon="stop"
-            className="EndScreenButton"
-            intent="danger"
-            onClick={this.sendEnd}
-          >
-            Close
-          </Button>
+          <div className="endscreen-btn-grp">
+            {obj}
+            <Button
+              icon="stop"
+              className="EndScreenButton"
+              intent="danger"
+              onClick={this.sendEnd}
+            >
+              Close
+            </Button>
+          </div>
         </div>
       </>
     );
