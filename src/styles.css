@@ -83,7 +83,7 @@ body {
   /* border-radius: 5px; */
 }
 
-.share-button {
+#share-button {
   margin: 3px auto;
   /* width: fit-content; */
   /* padding: 3px; */
@@ -158,7 +158,11 @@ img {
   height: 100%;
   background-size: cover;
 }
-
+#blank {
+  display: none;
+  /* position: absolute;
+  visibility: hidden; */
+}
 .EndScreen_Text {
   padding-top: 50px;
   color: white;

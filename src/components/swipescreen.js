@@ -7,6 +7,7 @@ import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import Clipboard from "clipboard";
 import LoadingImg from "../loading.gif";
 import Loading from "./loading";
 class SwipeScreen extends React.Component {
@@ -21,7 +22,7 @@ class SwipeScreen extends React.Component {
     this.decideCountText = this.decideCountText.bind(this);
     this.onSwipe = this.onSwipe.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
-    this.handleShare = this.handleShare.bind(this);
+    // this.handleShare = this.handleShare.bind(this);
   }
   // componenetDidMount() {
   //   //feed the total batch size to state on mount
@@ -137,22 +138,30 @@ class SwipeScreen extends React.Component {
     return obj;
   }
 
-  handleShare() {
-    let textToCopy = window.location.href;
-    if (this.detectMob()) {
-      //code for mobile
-      textToCopy.select();
-      document.execCommand("copy");
-      alert("Link copied to clipboard!");
-    } else {
-      navigator.clipboard.writeText(textToCopy);
-      alert("Link copied to clipboard!");
-    }
-  }
+  // handleShare() {
+  //   // let textToCopy = window.location.href;
+  //   // if (this.detectMob()) {
+  //   //   //code for mobile
+  //   //   var copyText = document.getElementById("blank");
+  //   //   copyText.select();
+  //   //   copyText.setSelectionRange(0, 99999);
+  //   //   try {
+  //   //     document.execCommand("copy");
+  //   //     alert("Link copied to clipboard!");
+  //   //   } catch (err) {
+  //   //     alert("Link couldnt be copied");
+  //   //   }
+  //   // } else {
+  //   //   navigator.clipboard.writeText(textToCopy);
+  //   //   alert("Link copied to clipboard!");
+  //   // }
+  //   alert("Link copied to clipboard!");
+  // }
 
   render() {
     let [count_text, x] = this.decideCountText();
     let obj = this.decideImgRender();
+    var clipboard = new Clipboard(".clipboard");
     return (
       <>
         {console.log("swipscreen props= ", this.props)}
@@ -178,11 +187,14 @@ class SwipeScreen extends React.Component {
                 <Icon icon="cross" iconSize={20} intent="danger" />{" "}
               </Button>
               <Button
-                className="share-button"
+                id="share-button"
+                className="clipboard"
+                data-clipboard-target="#blank"
+                data-clipboard-text={window.location.href}
                 intent="primary"
                 small={true}
-                disabled={this.detectMob()}
-                onClick={this.handleShare}
+                // disabled={this.detectMob()}
+                onClick={() => alert("Link copied to clipboard!")}
               >
                 <Icon icon="share" iconSize={20} />
               </Button>
@@ -197,6 +209,12 @@ class SwipeScreen extends React.Component {
             {obj}
           </div>
           <div className="footer">
+            <input
+              type="text"
+              id="blank"
+              value={window.location.href}
+              // hidden={true}
+            />
             <Button
               icon="small-cross"
               className="AcceptRejectButton"
