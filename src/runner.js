@@ -259,7 +259,7 @@ export default class App extends React.Component {
     //Send the current image to unlabeled
     // If undo stack has a url, send that as well to unlabeled
     let image_url, curr_image_url;
-    if (this.state.undoHappened) {
+    if (this.state.undoHappened && this.state.index) {
       image_url = this.state.image;
       curr_image_url = this.state.undoUrls[0];
     } else {
