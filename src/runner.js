@@ -35,7 +35,7 @@ export default class App extends React.Component {
       // curr_image_url: "none",
       undoHappened: true,
       noOfSwipes: 0,
-      batchStop: 5,
+      batchStop: 0,
       leftBehind: 0,
       // swipes: 1,
       // loading: false,
@@ -69,6 +69,7 @@ export default class App extends React.Component {
         this.setState(
           {
             total_batch_size: res.data.batch_size,
+            batchStop: res.data.batch_stop,
           },
           () => {
             console.log("got total batch state as: ", this.state.batch_size);
