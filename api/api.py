@@ -147,7 +147,7 @@ def list_image_url():
 def give_size():
     src = app.config["path_for_unlabeled"]
     size = len( [name for name in os.listdir(src)] )
-    return {"batch_size":size}
+    return {"batch_size":size,"batch_stop":batch_size}
 
 @app.route('/images')
 def list_image_urls():
