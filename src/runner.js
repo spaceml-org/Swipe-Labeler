@@ -33,6 +33,7 @@ export default class App extends React.Component {
       imgUrls: [],
       undoUrls: [],
       undoHappened: true,
+      swipes: 0,
       noOfSwipes: 0,
       batchStop: 0,
       leftBehind: 0,
@@ -53,7 +54,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    // When the app loads,get the batch size and then get all the image urls from flask.
+    // When the app loads,get the batch size and 1 image url from flask.
 
     //refresh handler - to copy the images back to unlabeled incase user hits refresh
     if (window.performance) {
@@ -103,10 +104,6 @@ export default class App extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    // clear the session storage
-    sessionStorage.clear();
-  }
   getTotalBatchSize() {
     axios
       .get("/getsize")
@@ -116,9 +113,14 @@ export default class App extends React.Component {
           {
             total_batch_size: res.data.batch_size,
             batchStop: res.data.batch_stop,
+            imagesLeft: res.data.batch_stop - 1,
           },
           () => {
             console.log("got total batch state as: ", this.state.batch_size);
+            // sessionStorage.setItem(
+            //   `totalBatchSize`,
+            //   this.state.total_batch_size
+            // );
           }
         );
       })
@@ -154,7 +156,7 @@ export default class App extends React.Component {
     } else url = "none";
     axios
       .post("/image", {
-        swipes: this.state.swipes + 1 || 0,
+        swipes: this.state.swipes + 1,
         image_url: url || "none",
       })
       .then((res) => {
@@ -218,6 +220,7 @@ export default class App extends React.Component {
         noOfSwipes: this.state.noOfSwipes + 1,
         swipes: this.state.noOfSwipes + this.state.leftBehind,
         undoHappened: false,
+        imagesLeft: this.state.imagesLeft - 1,
       },
       () => {
         this.sendSelection(1);
@@ -240,6 +243,7 @@ export default class App extends React.Component {
         noOfSwipes: this.state.noOfSwipes + 1,
         swipes: this.state.noOfSwipes + this.state.leftBehind,
         undoHappened: false,
+        imagesLeft: this.state.imagesLeft - 1,
       },
       () => {
         this.sendSelection(2);
@@ -262,6 +266,7 @@ export default class App extends React.Component {
         noOfSwipes: this.state.noOfSwipes + 1,
         swipes: this.state.noOfSwipes + this.state.leftBehind,
         undoHappened: false,
+        imagesLeft: this.state.imagesLeft - 1,
       },
       () => {
         this.sendSelection(0);
@@ -298,6 +303,7 @@ export default class App extends React.Component {
           noOfSwipes: this.state.noOfSwipes - 1,
           leftBehind: this.state.leftBehind + 1,
           undoHappened: true,
+          imagesLeft: this.state.imagesLeft + 1,
         });
       })
       .catch((err) => console.log("ERROR: ", err));
@@ -343,6 +349,7 @@ export default class App extends React.Component {
     {
       console.log("Parent Props\n", this.state.images);
     }
+    // let total_batch_size = parseInt(sessionStorage.getItem("totalBatchSize"));
     if (this.state.view === "tutorial")
       body = <TutorialScreen end={this.endTutorial} />;
     else if (this.state.view === "active")
@@ -351,8 +358,7 @@ export default class App extends React.Component {
           index={this.state.index}
           undoHappened={this.state.undoHappened}
           total_batch_size={this.state.total_batch_size}
-          // imgUrls={this.state.imgUrls}
-          // index={this.state.index}
+          swipes={this.state.swipes}
           batch_size={this.state.batch_size}
           labeledSize={this.state.labeledSize}
           image={this.state.image}
@@ -364,6 +370,7 @@ export default class App extends React.Component {
           time={this.state.time}
           batchStop={this.state.batchStop}
           noOfSwipes={this.state.noOfSwipes}
+          imagesLeft={this.state.imagesLeft}
         />
       ) : (
         <Button loading={true} />

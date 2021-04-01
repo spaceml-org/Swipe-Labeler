@@ -75,8 +75,13 @@ class SwipeScreen extends React.Component {
     // }
     let text = "";
     // let y = this.props.batchStop - this.props.noOfSwipes - 1;
-    let y = this.props.batch_size;
-    // let x = this.props.total_batch_size - this.props.batch_size;
+    let y;
+    // y = this.props.batchStop - this.props.swipes - 1;
+    y = this.props.imagesLeft;
+    // if (this.props.batchStop > this.props.batch_size) y = this.props.batch_size;
+    if (this.props.imagesLeft > this.props.batch_size) {
+      y = this.props.batch_size;
+    }
     if (y == 0) {
       text = "Last Image!";
       return [text, this.props.noOfSwipes / this.props.batchStop];
