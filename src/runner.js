@@ -41,6 +41,31 @@ export default class App extends React.Component {
       // loading: false,
     };
 
+    // // //refresh handler
+    // if (window.performance) {
+    //   if (performance.navigation.type == 1) {
+    //     //Send the current image to unlabeled
+    //     // If undo stack has a url, send that as well to unlabeled
+    //     let image_url = sessionStorage.getItem("url");
+    //     let curr_image_url = sessionStorage.getItem("undo-url");
+    //     if (curr_image_url == image_url) {
+    //       curr_image_url = "none";
+    //     }
+    //     console.log("Image url: ", image_url);
+    //     console.log("Curr_Image url: ", curr_image_url);
+
+    //     axios
+    //       .post("/test", {
+    //         image_url: image_url,
+    //         curr_image_url: curr_image_url,
+    //       })
+    //       .then((res) => {
+    //         console.log(res);
+    //       })
+    //       .catch((err) => console.log("ERROR: ", err));
+    //   }
+    // }
+
     // bind functions
     this.fetchImage = this.fetchImage.bind(this);
     this.sendSelection = this.sendSelection.bind(this);
@@ -56,11 +81,45 @@ export default class App extends React.Component {
 
   componentDidMount() {
     // When the app loads,get the batch size and then get all the image urls from flask.
-    // this.getBatchSize();
+
+    //refresh handler - to copy the images back to unlabeled incase user hits refresh
+    if (window.performance) {
+      if (performance.navigation.type == 1) {
+        //Send the current image to unlabeled
+        // If undo stack has a url, send that as well to unlabeled
+        let image_url = sessionStorage.getItem("url");
+        let curr_image_url = sessionStorage.getItem("undo-url");
+        if (curr_image_url == image_url) {
+          curr_image_url = "none";
+        }
+        console.log("Image url: ", image_url);
+        console.log("Curr_Image url: ", curr_image_url);
+
+        axios
+          .post("/refresh", {
+            image_url: image_url,
+            curr_image_url: curr_image_url,
+          })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => console.log("ERROR: ", err));
+      }
+    }
     this.getTotalBatchSize();
     this.fetchImage();
   }
 
+  componentDidUpdate() {
+    // load the current image onto session storage, to be moved later incase user hits refresh
+    sessionStorage.setItem(`undo-url`, this.state.curr_image_url);
+    sessionStorage.setItem(`url`, this.state.image);
+  }
+
+  componentWillUnmount() {
+    // clear the session storage
+    sessionStorage.clear();
+  }
   getTotalBatchSize() {
     axios
       .get("/getsize")

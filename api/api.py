@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 import random
 import shutil
+import time
 
 from flask import Flask, request, send_from_directory, render_template, session
 from flask.logging import create_logger
@@ -39,6 +40,7 @@ def create_app(batch_size, path_for_unlabeled):
     app.config["temp"] = os.path.join(Path(path_for_unlabeled).resolve().parent,'temp')
     if os.path.exists(app.config["temp"]):
         shutil.rmtree(app.config["temp"])
+        time.sleep(0.5)
     os.mkdir(app.config["temp"])
 
     # This is the path_for_unlabeled folder that is passed in as an argument when starting this script.
@@ -106,36 +108,37 @@ def list_image_url():
         # This line cuts off the '/media/' at the start of the image_url from request.
         image_name = image_url[7:]
  
-    if int(swipes) >= batch_size :
-        # check in temp for any leftover images  (occurs when undoing an image, ie, the currently served img remains in temp)
-        if(os.listdir(app.config["temp"])):
-            # Pick requested file from temp to display
-            if image_name in os.listdir(app.config["temp"]):
-                # image = random.choice(os.listdir(app.config["temp"]))
-                image_path = os.path.join(app.config["temp"],image_name)
-                msg = None
-                return {"image":"/media/"+image_name , "path":image_path , "msg":msg,"swipes":swipes}
-            else:
-                return {"image":"none", "path":"none", "msg":"none","swipes":swipes}    
-        else:
-            return {"image":"none", "path":"none", "msg":"none","swipes":swipes}
-    elif (image_url != "none"):
+    # if int(swipes) >= batch_size :
+    #     # check in temp for any leftover images  (occurs when undoing an image, ie, the currently served img remains in temp)
+    #     if(os.listdir(app.config["temp"])):
+    #         # Pick requested file from temp to display
+    #         if image_name in os.listdir(app.config["temp"]):
+    #             # image = random.choice(os.listdir(app.config["temp"]))
+    #             image_path = os.path.join(app.config["temp"],image_name)
+    #             msg = None
+    #             return {"image":"/media/"+image_name , "path":image_path , "msg":msg,"swipes":swipes,"reached":"1st"}
+    #         else:
+    #             return {"image":"none", "path":"none", "msg":"none","swipes":swipes,"reached":"1st"}    
+    #     else:
+    #         return {"image":"none", "path":"none", "msg":"none","swipes":swipes,"reached":"1st"}
+    #Check if undo was clicked and serve that missed image from temp
+    if (image_url != "none"):
         # Pick requested file from temp to display
         if image_name in os.listdir(app.config["temp"]):
             # image = random.choice(os.listdir(app.config["temp"]))
             image_path = os.path.join(app.config["temp"],image_name)
             msg = None
-            return {"image":"/media/"+image_name , "path":image_path , "msg":msg,"swipes":swipes}
+            return {"image":"/media/"+image_name , "path":image_path , "msg":msg,"swipes":swipes,"reached":"1st"}
         else:
-            return {"image":"none", "path":"none", "msg":"none","swipes":swipes}
-        
-    else:
+            return {"image":"none", "path":"none", "msg":"none","swipes":swipes,"reached":"1st"}
+    # Undo didnt happen, pick a random file from unlabeled 
+    else:   
         src = app.config["path_for_unlabeled"]
         image = None
         if ( len(os.listdir(src)) ):
             image = random.choice(os.listdir(src))
         else:
-            return {"image":"none", "path":"none", "msg":"none","swipes":swipes} 
+            return {"image":"none", "path":"none", "msg":"none","swipes":swipes,"reached":"3rd"}
 
     # Move current file to temp folder
     image_path = os.path.join(src,image)
@@ -360,7 +363,33 @@ def quit_app():
 
     return {'status':'success','msg':msg}
 
+@app.route('/refresh',methods=['POST'])
+def test():
+    msg1 = None
+    # Transfer the request image from temp to unlabeled folder
+    image_url = request.get_json()['image_url']
+    curr_image_url = request.get_json()['curr_image_url']
+    if( not image_url and curr_image_url == "none"):
+         return {'status':'nothing to move'}
+    #This line cuts off the '/media/' at the start of the image_url from request.
+    image_name = image_url[7:]
+    src2 = None
+    msg2 = None
+    if(curr_image_url != "none"):
+        curr_image_name = curr_image_url[7:]
+        src2 = os.path.join(app.config['temp'],curr_image_name)
+        dest = os.path.join(app.config['path_for_unlabeled'],curr_image_name)
+        if( not os.path.exists(src2)):  
+            return {'status':'nothing to move'}
+        msg2 = shutil.move(src2,dest)
+    
+    src = os.path.join(app.config['temp'],image_name)
+    if(not os.path.exists(src)):
+        return {'status':'nothing to move',"msg":msg1}
+    dest = os.path.join(app.config['path_for_unlabeled'],image_name)
+    msg1 = shutil.move(src,dest)
 
+    return {'status':'success','msg1':msg1,'msg2':msg2}
 
 @app.route('/end', methods=['GET', 'POST'])
 def end_app():

@@ -22,7 +22,6 @@ class SwipeScreen extends React.Component {
     this.decideCountText = this.decideCountText.bind(this);
     this.onSwipe = this.onSwipe.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
-    // this.handleShare = this.handleShare.bind(this);
   }
   // componenetDidMount() {
   //   //feed the total batch size to state on mount
@@ -115,10 +114,6 @@ class SwipeScreen extends React.Component {
         </TinderCard>
       );
     } else {
-      // if (this.state.loading) {
-      //   obj = <Loading img={LoadingImg} />;
-      //   return obj;
-      // }
       obj = (
         <TinderCard
           onSwipe={this.onSwipe}
@@ -137,26 +132,6 @@ class SwipeScreen extends React.Component {
     }
     return obj;
   }
-
-  // handleShare() {
-  //   // let textToCopy = window.location.href;
-  //   // if (this.detectMob()) {
-  //   //   //code for mobile
-  //   //   var copyText = document.getElementById("blank");
-  //   //   copyText.select();
-  //   //   copyText.setSelectionRange(0, 99999);
-  //   //   try {
-  //   //     document.execCommand("copy");
-  //   //     alert("Link copied to clipboard!");
-  //   //   } catch (err) {
-  //   //     alert("Link couldnt be copied");
-  //   //   }
-  //   // } else {
-  //   //   navigator.clipboard.writeText(textToCopy);
-  //   //   alert("Link copied to clipboard!");
-  //   // }
-  //   alert("Link copied to clipboard!");
-  // }
 
   render() {
     let [count_text, x] = this.decideCountText();
