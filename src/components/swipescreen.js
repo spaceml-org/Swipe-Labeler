@@ -146,7 +146,10 @@ class SwipeScreen extends React.Component {
               <Timer />
             </div>
             <div className="ct-grp">
-              <span>Dataset Total: {this.props.total_batch_size}</span>
+              <span>
+                Labeled {this.props.labeledSize} out of{" "}
+                {this.props.total_batch_size}
+              </span>
               <br></br>
               <span>{count_text}</span>
               {console.log("x= ", x)}

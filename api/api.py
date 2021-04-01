@@ -65,23 +65,31 @@ def create_app(batch_size, path_for_unlabeled):
         # Define Labeled folder to be at the same level as path_for_unlabeled
         labeled_folder = os.path.join(str(parent_directory), 'Labeled')
         # Make the (parent_directory)/Labeled folder if it doesn't exist already.
-        if not os.path.exists(labeled_folder):
-            os.mkdir(labeled_folder)
+        if os.path.exists(labeled_folder):
+            shutil.rmtree(labeled_folder)
+            time.sleep(0.2)
+        os.mkdir(labeled_folder)
 
         # Create parent_directory/Labeled/Labeled_Positive folder if it doesn't already exist.
         labeled_positive = os.path.join(labeled_folder, 'Labeled_Positive')
-        if not os.path.exists(labeled_positive):
-            os.mkdir(labeled_positive)
+        if os.path.exists(labeled_positive):
+            shutil.rmtree(labeled_positive)
+            time.sleep(0.2)
+        os.mkdir(labeled_positive)
 
         # # Create swipe_labeler_data/labeled_positive folder if it doesn't already exist.
         labeled_negative = os.path.join(labeled_folder, 'Labeled_Negative')
-        if not os.path.exists(labeled_negative):
-            os.mkdir(labeled_negative)
+        if os.path.exists(labeled_negative):
+            shutil.rmtree(labeled_negative)
+            time.sleep(0.2)
+        os.mkdir(labeled_negative)
 
         # # Create swipe_labeler_data/labeled_positive folder if it doesn't already exist.
         unsure = os.path.join(labeled_folder, 'Unsure')
-        if not os.path.exists(unsure):
-            os.mkdir(unsure)
+        if os.path.exists(unsure):
+           shutil.rmtree(unsure)
+           time.sleep(0.2)
+        os.mkdir(unsure)
     return app
 
 app = create_app(batch_size, path_for_unlabeled)
@@ -150,7 +158,18 @@ def list_image_url():
 def give_size():
     src = app.config["path_for_unlabeled"]
     size = len( [name for name in os.listdir(src)] )
-    return {"batch_size":size,"batch_stop":batch_size}
+    parent_directory = os.path.dirname(src)
+    labeled_folder = os.path.join(str(parent_directory), 'Labeled')
+    labeled_positive = os.path.join(labeled_folder, 'Labeled_Positive')
+    labeled_negative = os.path.join(labeled_folder, 'Labeled_Negative')
+    unsure = os.path.join(labeled_folder, 'Unsure')
+    labeled_positive_size = len( [name for name in os.listdir(labeled_positive)])
+    labeled_negative_size = len( [name for name in os.listdir(labeled_negative)])
+    unsure_size = len( [name for name in os.listdir(unsure)])
+    
+    labeled_size = labeled_negative_size + labeled_positive_size + unsure_size
+
+    return {"batch_size":size,"batch_stop":batch_size,"labeled_size":labeled_size}
 
 @app.route('/images')
 def list_image_urls():
@@ -364,7 +383,7 @@ def quit_app():
     return {'status':'success','msg':msg}
 
 @app.route('/refresh',methods=['POST'])
-def test():
+def refresh_handler():
     msg1 = None
     # Transfer the request image from temp to unlabeled folder
     image_url = request.get_json()['image_url']

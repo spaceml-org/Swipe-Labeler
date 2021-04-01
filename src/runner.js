@@ -32,39 +32,12 @@ export default class App extends React.Component {
       batch_size: null,
       imgUrls: [],
       undoUrls: [],
-      // curr_image_url: "none",
       undoHappened: true,
       noOfSwipes: 0,
       batchStop: 0,
       leftBehind: 0,
-      // swipes: 1,
-      // loading: false,
+      labeledSize: 0,
     };
-
-    // // //refresh handler
-    // if (window.performance) {
-    //   if (performance.navigation.type == 1) {
-    //     //Send the current image to unlabeled
-    //     // If undo stack has a url, send that as well to unlabeled
-    //     let image_url = sessionStorage.getItem("url");
-    //     let curr_image_url = sessionStorage.getItem("undo-url");
-    //     if (curr_image_url == image_url) {
-    //       curr_image_url = "none";
-    //     }
-    //     console.log("Image url: ", image_url);
-    //     console.log("Curr_Image url: ", curr_image_url);
-
-    //     axios
-    //       .post("/test", {
-    //         image_url: image_url,
-    //         curr_image_url: curr_image_url,
-    //       })
-    //       .then((res) => {
-    //         console.log(res);
-    //       })
-    //       .catch((err) => console.log("ERROR: ", err));
-    //   }
-    // }
 
     // bind functions
     this.fetchImage = this.fetchImage.bind(this);
@@ -106,14 +79,28 @@ export default class App extends React.Component {
           .catch((err) => console.log("ERROR: ", err));
       }
     }
+
+    let x = parseInt(sessionStorage.getItem("noOfSwipes"));
+    if (!x) x = 0;
+    this.setState({
+      noOfSwipes: x,
+    });
+
     this.getTotalBatchSize();
     this.fetchImage();
   }
 
   componentDidUpdate() {
-    // load the current image onto session storage, to be moved later incase user hits refresh
-    sessionStorage.setItem(`undo-url`, this.state.curr_image_url);
-    sessionStorage.setItem(`url`, this.state.image);
+    if (this.state.view === "end") {
+      //clear session storage before moving to endscreen
+      console.log("reached end");
+      sessionStorage.setItem(`noOfSwipes`, 0);
+    } else {
+      // load the current image onto session storage, to be moved later incase user hits refresh
+      sessionStorage.setItem(`undo-url`, this.state.curr_image_url);
+      sessionStorage.setItem(`url`, this.state.image);
+      sessionStorage.setItem(`noOfSwipes`, this.state.noOfSwipes);
+    }
   }
 
   componentWillUnmount() {
@@ -146,6 +133,7 @@ export default class App extends React.Component {
         this.setState(
           {
             batch_size: res.data.batch_size,
+            labeledSize: res.data.labeled_size,
           },
           () => {
             console.log("got total batch state as: ", this.state.batch_size);
@@ -366,6 +354,7 @@ export default class App extends React.Component {
           // imgUrls={this.state.imgUrls}
           // index={this.state.index}
           batch_size={this.state.batch_size}
+          labeledSize={this.state.labeledSize}
           image={this.state.image}
           onAcceptClick={this.onAcceptClick}
           onRejectClick={this.onRejectClick}
