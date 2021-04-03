@@ -101,8 +101,7 @@ def index():
     print("testing")
     return render_template('index.html')
 
-#@app.route('/image',defaults={'swipes': 0})
-# @app.route('/image/<swipes>')
+
 @app.route('/image',methods=['POST'])
 def list_image_url():
     # Servers images by moving them from unlabeled to temp or directly serves from temp
@@ -116,19 +115,6 @@ def list_image_url():
         # This line cuts off the '/media/' at the start of the image_url from request.
         image_name = image_url[7:]
  
-    # if int(swipes) >= batch_size :
-    #     # check in temp for any leftover images  (occurs when undoing an image, ie, the currently served img remains in temp)
-    #     if(os.listdir(app.config["temp"])):
-    #         # Pick requested file from temp to display
-    #         if image_name in os.listdir(app.config["temp"]):
-    #             # image = random.choice(os.listdir(app.config["temp"]))
-    #             image_path = os.path.join(app.config["temp"],image_name)
-    #             msg = None
-    #             return {"image":"/media/"+image_name , "path":image_path , "msg":msg,"swipes":swipes,"reached":"1st"}
-    #         else:
-    #             return {"image":"none", "path":"none", "msg":"none","swipes":swipes,"reached":"1st"}    
-    #     else:
-    #         return {"image":"none", "path":"none", "msg":"none","swipes":swipes,"reached":"1st"}
     #Check if undo was clicked and serve that missed image from temp
     if (image_url != "none"):
         # Pick requested file from temp to display
@@ -156,6 +142,7 @@ def list_image_url():
 
 @app.route('/getsize')
 def give_size():
+    
     src = app.config["path_for_unlabeled"]
     size = len( [name for name in os.listdir(src)] )
     parent_directory = os.path.dirname(src)

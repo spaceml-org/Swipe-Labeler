@@ -32,7 +32,7 @@ class EndScreen extends React.Component {
     decoded.split(";").forEach((item) => {
       if (item.trim().startsWith("swipeTime")) time = item.trim().split("=")[1];
     });
-    // console.log("time= ", time);
+
     return time;
   }
 

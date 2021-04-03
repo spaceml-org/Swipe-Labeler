@@ -23,13 +23,7 @@ class SwipeScreen extends React.Component {
     this.onSwipe = this.onSwipe.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
   }
-  // componenetDidMount() {
-  //   //feed the total batch size to state on mount
-  //   console.log("reached swipescreen mounting!");
-  //   this.setState({
-  //     batchTotal: this.props.batch_size,
-  //   });
-  // }
+
   componentWillMount() {
     document.addEventListener("keyup", this.onKeyPress, false);
   }
@@ -68,17 +62,12 @@ class SwipeScreen extends React.Component {
   decideCountText() {
     //Helper function to render progress of correct width on the progress bar
 
-    // if (this.props.noOfSwipes === 0) {
-    //   this.setState({
-    //     batch_size: this.props.batch_size,
-    //   });
-    // }
     let text = "";
-    // let y = this.props.batchStop - this.props.noOfSwipes - 1;
+
     let y;
-    // y = this.props.batchStop - this.props.swipes - 1;
+
     y = this.props.imagesLeft;
-    // if (this.props.batchStop > this.props.batch_size) y = this.props.batch_size;
+
     if (this.props.imagesLeft > this.props.batch_size) {
       y = this.props.batch_size;
     }
@@ -92,6 +81,7 @@ class SwipeScreen extends React.Component {
   }
 
   detectMob() {
+    // helper function to check type of device(mobile/desktop)
     const toMatch = [
       /Android/i,
       /webOS/i,
@@ -176,7 +166,6 @@ class SwipeScreen extends React.Component {
                 data-clipboard-text={window.location.href}
                 intent="primary"
                 small={true}
-                // disabled={this.detectMob()}
                 onClick={() => alert("Link copied to clipboard!")}
               >
                 <Icon icon="share" iconSize={20} />
@@ -192,12 +181,7 @@ class SwipeScreen extends React.Component {
             {obj}
           </div>
           <div className="footer">
-            <input
-              type="text"
-              id="blank"
-              value={window.location.href}
-              // hidden={true}
-            />
+            <input type="text" id="blank" value={window.location.href} />
             <Button
               icon="small-cross"
               className="AcceptRejectButton"

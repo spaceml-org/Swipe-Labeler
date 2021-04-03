@@ -93,7 +93,7 @@ export default class App extends React.Component {
 
   componentDidUpdate() {
     if (this.state.view === "end") {
-      //clear session storage before moving to endscreen
+      //change session storage before moving to endscreen
       console.log("reached end");
       sessionStorage.setItem(`noOfSwipes`, 0);
     } else {
@@ -117,10 +117,6 @@ export default class App extends React.Component {
           },
           () => {
             console.log("got total batch state as: ", this.state.batch_size);
-            // sessionStorage.setItem(
-            //   `totalBatchSize`,
-            //   this.state.total_batch_size
-            // );
           }
         );
       })
@@ -178,7 +174,6 @@ export default class App extends React.Component {
               imgUrls: x,
               curr_image_url: url,
               swipes: s,
-              // siwpes: s,
             },
             () => {
               console.log("img ", typeof this.state.image);
@@ -215,7 +210,6 @@ export default class App extends React.Component {
     // and update the index so the next image will show.
     this.setState(
       {
-        // batch_size: this.state.batch_size - 1,
         index: this.state.index + 1,
         noOfSwipes: this.state.noOfSwipes + 1,
         swipes: this.state.noOfSwipes + this.state.leftBehind,
@@ -238,7 +232,6 @@ export default class App extends React.Component {
     // and update the index so the next image will show.
     this.setState(
       {
-        // batch_size: this.state.batch_size - 1,
         index: this.state.index + 1,
         noOfSwipes: this.state.noOfSwipes + 1,
         swipes: this.state.noOfSwipes + this.state.leftBehind,
@@ -261,7 +254,6 @@ export default class App extends React.Component {
     // and update the index so the next image will show.
     this.setState(
       {
-        // batch_size: this.state.batch_size - 1,
         index: this.state.index + 1,
         noOfSwipes: this.state.noOfSwipes + 1,
         swipes: this.state.noOfSwipes + this.state.leftBehind,
@@ -280,8 +272,6 @@ export default class App extends React.Component {
   }
 
   onBackClick() {
-    // current image = this.state.imgUrls[this.state.index]
-    // console.log("Request: ", this.state.imgUrls[this.state.index - 1]);
     // add the image which is going to be undone to url stack and request the same image from flask
     let x = this.state.imgUrls;
     let y = this.state.undoUrls;
@@ -295,7 +285,6 @@ export default class App extends React.Component {
       .then((res) => {
         console.log(res);
         this.setState({
-          // batch_size: this.state.batch_size + 1,
           index: this.state.index + 1,
           image: this.state.imgUrls[this.state.index - 1],
           imgUrls: x,
@@ -344,12 +333,11 @@ export default class App extends React.Component {
   }
 
   render() {
-    // this.getBatchSize();
     var body = null;
     {
       console.log("Parent Props\n", this.state.images);
     }
-    // let total_batch_size = parseInt(sessionStorage.getItem("totalBatchSize"));
+
     if (this.state.view === "tutorial")
       body = <TutorialScreen end={this.endTutorial} />;
     else if (this.state.view === "active")
