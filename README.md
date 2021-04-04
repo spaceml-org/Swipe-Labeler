@@ -35,7 +35,7 @@ For example, if you’re looking to label images as either containing or not con
 
 5. Run this this application as a python file. (Don't use "flask run" as you might with other Flask applications.) \
 As you do so, pass the complete path to the directory containing the images you want to label (as a string) as the argument `--to_be_labeled` . \
-        `python api/api.py --to_be_labeled=(the complete path to your directory of unlabeled images)` \
+        `python api/api.py --path_for_unlabeled=(the complete path to your directory of unlabeled images) --batch_size=(optional batch size , default is 5)` \
 \
 **Important Note** - When you run this application, a new folder will be created for you (if doesn't already exist) under the same parent directory as your `to_be_labeled`. This sibling directory, `Labeled`, will contain the following:
     
