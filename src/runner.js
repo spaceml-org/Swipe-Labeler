@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "./styles.css";
 import { Button } from "@blueprintjs/core";
 import { SwipeScreen } from "./components/swipescreen";
@@ -58,12 +58,12 @@ export default class App extends React.Component {
 
     //refresh handler - to copy the images back to unlabeled incase user hits refresh
     if (window.performance) {
-      if (performance.navigation.type == 1) {
+      if (performance.navigation.type === 1) {
         //Send the current image to unlabeled
         // If undo stack has a url, send that as well to unlabeled
         let image_url = sessionStorage.getItem("url");
         let curr_image_url = sessionStorage.getItem("undo-url");
-        if (curr_image_url == image_url) {
+        if (curr_image_url === image_url) {
           curr_image_url = "none";
         }
         console.log("Image url: ", image_url);
@@ -144,7 +144,7 @@ export default class App extends React.Component {
   fetchImage() {
     // Collect one image url from flask
     let url;
-    if (this.state.leftBehind != 0) {
+    if (this.state.leftBehind !== 0) {
       url = this.state.undoUrls.pop();
       this.setState({
         leftBehind: this.state.leftBehind - 1,
