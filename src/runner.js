@@ -280,7 +280,6 @@ export default class App extends React.Component {
     axios
       .post("/undo", {
         image_url: this.state.imgUrls[this.state.index - 1],
-        curr_image_url: this.state.imgUrls[this.state.index],
       })
       .then((res) => {
         console.log(res);

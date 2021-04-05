@@ -318,10 +318,10 @@ def undo_swipe():
     # Moves the requested image from labeled to temp
     # Checks in the Labeled folder to retrieve requested image. 
     image_url = request.get_json()['image_url']
-    curr_image_url = request.get_json()['curr_image_url']
+    #curr_image_url = request.get_json()['curr_image_url']
     # This line cuts off the '/media/' at the start of the image_url from request.
     image_name = image_url[7:]
-    curr_image_name = curr_image_url[7:]
+    #curr_image_name = curr_image_url[7:]
     # Get the path of Labeled folder and its sub-folders
     parent_directory = os.path.dirname(app.config['path_for_unlabeled'])
     labeled_folder = os.path.join(str(parent_directory), 'Labeled')
@@ -335,9 +335,6 @@ def undo_swipe():
     # Search and transfer requested image to temp folder for serving in future
     # dest_path = os.path.join(app.config['path_for_unlabeled'],image_name)
     dest_path = os.path.join(app.config['temp'],image_name)
-    curr_img_path = os.path.join(app.config["temp"],curr_image_name)
-    #Move the currently served image ( ie, before hitting undo button) from temp to remainder_folder to show later
-    # shutil.move(curr_img_path,os.path.join(app.config['remainder'],curr_image_name))
     # Search and transfer requested image to temp folder for serving in future
     if (os.path.exists(pos_path)):
         shutil.move(pos_path,dest_path)
