@@ -90,6 +90,7 @@ def create_app(batch_size, path_for_unlabeled):
            shutil.rmtree(unsure)
            time.sleep(0.2)
         os.mkdir(unsure)
+
     return app
 
 app = create_app(batch_size, path_for_unlabeled)
@@ -145,68 +146,26 @@ def give_size():
     
     src = app.config["path_for_unlabeled"]
     size = len( [name for name in os.listdir(src)] )
-    parent_directory = os.path.dirname(src)
-    labeled_folder = os.path.join(str(parent_directory), 'Labeled')
-    labeled_positive = os.path.join(labeled_folder, 'Labeled_Positive')
-    labeled_negative = os.path.join(labeled_folder, 'Labeled_Negative')
-    unsure = os.path.join(labeled_folder, 'Unsure')
-    labeled_positive_size = len( [name for name in os.listdir(labeled_positive)])
-    labeled_negative_size = len( [name for name in os.listdir(labeled_negative)])
-    unsure_size = len( [name for name in os.listdir(unsure)])
-    
-    labeled_size = labeled_negative_size + labeled_positive_size + unsure_size
+
+    # Use specific labeled folder paths , if user provided
+    if path_for_neg and path_for_pos and path_for_unsure:
+        labeled_positive_size = len( [name for name in os.listdir(path_for_neg)])
+        labeled_negative_size = len( [name for name in os.listdir(path_for_pos)])
+        unsure_size = len( [name for name in os.listdir(path_for_unsure)])
+        labeled_size = labeled_negative_size + labeled_positive_size + unsure_size
+    # Use default labeled folder paths , if user didnt provide them
+    else:       
+        parent_directory = os.path.dirname(src)
+        labeled_folder = os.path.join(str(parent_directory), 'Labeled')
+        labeled_positive = os.path.join(labeled_folder, 'Labeled_Positive')
+        labeled_negative = os.path.join(labeled_folder, 'Labeled_Negative')
+        unsure = os.path.join(labeled_folder, 'Unsure')
+        labeled_positive_size = len( [name for name in os.listdir(labeled_positive)])
+        labeled_negative_size = len( [name for name in os.listdir(labeled_negative)])
+        unsure_size = len( [name for name in os.listdir(unsure)])
+        labeled_size = labeled_negative_size + labeled_positive_size + unsure_size
 
     return {"batch_size":size,"batch_stop":batch_size,"labeled_size":labeled_size}
-
-@app.route('/images')
-def list_image_urls():
-    '''Gives the list of urls for the served media files for each of the images.'''
-
-    # This is the path_for_unlabeled folder that is passed in as an argument when starting this script.
-    orig_images_path = app.config['path_for_unlabeled']
-    # Finds the parent of path_for_unlabeled, so Labeled can be created as a sibling folder.
-    parent_directory = os.path.dirname(orig_images_path)
-
-    #if user provided arguments for paths then define driectory based on that:
-    if(path_for_neg and path_for_pos and path_for_unsure):
-        # Make the positive label folder
-        if not os.path.exists(path_for_pos):
-            os.mkdir(path_for_pos)
-        # Make the negative label folder
-        if not os.path.exists(path_for_neg):
-            os.mkdir(path_for_neg)
-        # Make the unsure label folder
-        if not os.path.exists(path_for_unsure):
-            os.mkdir(path_for_unsure)
-
-    #default case incase user doesnt provide argument paths for labelling folders
-    else:
-        # Define Labeled folder to be at the same level as path_for_unlabeled
-        labeled_folder = os.path.join(str(parent_directory), 'Labeled')
-        # Make the (parent_directory)/Labeled folder if it doesn't exist already.
-        if not os.path.exists(labeled_folder):
-            os.mkdir(labeled_folder)
-
-        # Create parent_directory/Labeled/Labeled_Positive folder if it doesn't already exist.
-        labeled_positive = os.path.join(labeled_folder, 'Labeled_Positive')
-        if not os.path.exists(labeled_positive):
-            os.mkdir(labeled_positive)
-
-        # # Create swipe_labeler_data/labeled_positive folder if it doesn't already exist.
-        labeled_negative = os.path.join(labeled_folder, 'Labeled_Negative')
-        if not os.path.exists(labeled_negative):
-            os.mkdir(labeled_negative)
-
-        # # Create swipe_labeler_data/labeled_positive folder if it doesn't already exist.
-        unsure = os.path.join(labeled_folder, 'Unsure')
-        if not os.path.exists(unsure):
-            os.mkdir(unsure)
-
-    # # A list of all the served urls for each of the images in the path_for_unlabeled_folder.
-    images = ['/media/' + x.name for x in Path(orig_images_path).iterdir(
-    ) if x.name != ".DS_Store" and x.name != "swipe_labeler_data"][:app.config['batch_size']]
-
-    return {'images': images }
 
 #helper route to log test requests, can be removed after project completion
 @app.route('/details')
@@ -228,7 +187,7 @@ def serve_image_url(filename):
 
 @app.route('/submit', methods=['POST'])
 def submit_label():
-    '''Saves the labeled image file into the positive or negative directory'''
+    '''Saves the labeled image file into the positive,negative or unsure directory'''
 
     # Get the label value of this image from the request.
     value = request.get_json()['value']
@@ -238,10 +197,14 @@ def submit_label():
     image_name = image_url[7:]
     # These folders are defined in terms of the path_for_unlabeled folder (passed as argument when you start this script)
     orig_images_path = app.config['temp']
+
+    
+
     # If the User provided path arguments then use those paths:
     if(path_for_neg and path_for_pos and path_for_unsure):
         old_path = None
         if os.path.exists(os.path.join(orig_images_path, image_name)):
+            msg = "reached nested if"
             old_path = os.path.join(orig_images_path, image_name)
         
         elif os.path.exists(os.path.join(path_for_pos, image_name)) :
@@ -283,14 +246,14 @@ def submit_label():
         old_path = None
         if os.path.exists(os.path.join(orig_images_path, image_name)):
             old_path = os.path.join(orig_images_path, image_name)
-
+        # The next 3 elif blocks are to check in lableled folder, in case undo was hit on an image
         elif os.path.exists(os.path.join(labeled_positive, image_name)):
             old_path = os.path.join(labeled_positive, image_name)
 
-        elif os.path.exists(os.path.join(labeled_negative, image_name)) :
+        elif os.path.exists(os.path.join(labeled_negative, image_name)):
             old_path = os.path.join(labeled_negative, image_name)
 
-        elif os.path.exists(os.path.join(unsure, image_name)) :
+        elif os.path.exists(os.path.join(unsure, image_name)):
             old_path = os.path.join(unsure, image_name)
 
 
@@ -310,7 +273,7 @@ def submit_label():
                 # Move the file to the unsure folder.
                 shutil.move(old_path, unsure_path)
 
-    return {'status': 'success'}
+    return {'status': 'success','old_path':old_path}
 
 @app.route('/undo', methods=['POST'])
 def undo_swipe():
@@ -322,12 +285,20 @@ def undo_swipe():
     # This line cuts off the '/media/' at the start of the image_url from request.
     image_name = image_url[7:]
     #curr_image_name = curr_image_url[7:]
+
     # Get the path of Labeled folder and its sub-folders
-    parent_directory = os.path.dirname(app.config['path_for_unlabeled'])
-    labeled_folder = os.path.join(str(parent_directory), 'Labeled')
-    labeled_positive = os.path.join(labeled_folder, 'Labeled_Positive')
-    labeled_negative = os.path.join(labeled_folder, 'Labeled_Negative')
-    unsure = os.path.join(labeled_folder, 'Unsure')
+    # If the User provided path arguments then use those paths:
+    if(path_for_neg and path_for_pos and path_for_unsure):
+        labeled_positive = path_for_pos
+        labeled_negative = path_for_neg
+        unsure = path_for_unsure
+    # Use default paths, if user didnt provide
+    else:
+        parent_directory = os.path.dirname(app.config['path_for_unlabeled'])
+        labeled_folder = os.path.join(str(parent_directory), 'Labeled')
+        labeled_positive = os.path.join(labeled_folder, 'Labeled_Positive')
+        labeled_negative = os.path.join(labeled_folder, 'Labeled_Negative')
+        unsure = os.path.join(labeled_folder, 'Unsure')
     # Define paths for sub-folder/image
     pos_path = os.path.join(labeled_positive, image_name)
     neg_path = os.path.join(labeled_negative, image_name)
