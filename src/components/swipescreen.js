@@ -182,14 +182,6 @@ class SwipeScreen extends React.Component {
           <div className="footer">
             <input type="text" id="blank" value={window.location.href} />
             <Button
-              icon="small-cross"
-              className="AcceptRejectButton"
-              intent="primary"
-              onClick={this.props.onRejectClick}
-            >
-              Reject
-            </Button>
-            <Button
               icon="remove"
               className="AcceptRejectButton"
               intent="danger"
@@ -204,6 +196,14 @@ class SwipeScreen extends React.Component {
               onClick={this.props.onAcceptClick}
             >
               Accept
+            </Button>
+            <Button
+              icon="small-cross"
+              className="AcceptRejectButton"
+              intent="primary"
+              onClick={this.props.onRejectClick}
+            >
+              Reject
             </Button>
             <Button
               icon="undo"
