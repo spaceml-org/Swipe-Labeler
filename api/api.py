@@ -51,14 +51,20 @@ def create_app(batch_size, path_for_unlabeled):
     #if user provided arguments for paths then define driectory based on that:
     if(path_for_neg and path_for_pos and path_for_unsure):
         # Make the positive label folder
-        if not os.path.exists(path_for_pos):
-            os.mkdir(path_for_pos)
+        if os.path.exists(path_for_pos):
+            shutil.rmtree(path_for_pos)
+            time.sleep(0.2)
+        os.mkdir(path_for_pos)
         # Make the negative label folder
-        if not os.path.exists(path_for_neg):
-            os.mkdir(path_for_neg)
+        if os.path.exists(path_for_neg):
+            shutil.rmtree(path_for_neg)
+            time.sleep(0.2)
+        os.mkdir(path_for_neg)
         # Make the unsure label folder
-        if not os.path.exists(path_for_unsure):
-            os.mkdir(path_for_unsure)
+        if os.path.exists(path_for_unsure):
+            shutil.rmtree(path_for_unsure)
+            time.sleep(0.2)
+        os.mkdir(path_for_unsure)
 
     #default case incase user doesnt provide argument paths for labelling folders
     else:
@@ -183,7 +189,6 @@ def serve_image_url(filename):
     orig_images_path = app.config['temp']
     # Serves the single image requested from the path_for_unlabeled folder.
     return send_from_directory(orig_images_path, filename)
-
 
 @app.route('/submit', methods=['POST'])
 def submit_label():
