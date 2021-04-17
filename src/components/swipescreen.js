@@ -15,6 +15,7 @@ class SwipeScreen extends React.Component {
 
     this.state = {
       batchTotal: this.props.batch_size,
+      // progWidth: this.props.progWidth,
     };
 
     //bind functions
@@ -68,15 +69,25 @@ class SwipeScreen extends React.Component {
     y = this.props.imagesLeft;
 
     if (this.props.imagesLeft > this.props.batch_size) {
+      console.log("the condition reached!");
       y = this.props.batch_size;
     }
     if (y == 0) {
       text = "Last Image!";
-      return [text, this.props.noOfSwipes / this.props.batchStop];
+      return text;
     }
-    if (y !== 1) text = y + " Images Left!";
-    else text = y + " Image Left!";
-    return [text, this.props.noOfSwipes / this.props.batchStop];
+    if (y !== 1) text = y + " images left in batch !";
+    else text = y + " image left in batch!";
+
+    return text;
+  }
+
+  detectTouch() {
+    return (
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      navigator.msMaxTouchPoints > 0
+    );
   }
 
   detectMob() {
@@ -98,7 +109,19 @@ class SwipeScreen extends React.Component {
 
   decideImgRender() {
     let obj;
+    if (!this.detectTouch()) {
+      console.log("Not touch!");
+    } else console.log("touch");
     if (this.detectMob()) {
+      obj = (
+        <TinderCard
+          onSwipe={this.onSwipe}
+          preventSwipe={["right", "left", "down", "up"]}
+        >
+          <img src={this.props.image} alt="" />
+        </TinderCard>
+      );
+    } else if (this.detectTouch()) {
       obj = (
         <TinderCard
           onSwipe={this.onSwipe}
@@ -128,7 +151,8 @@ class SwipeScreen extends React.Component {
   }
 
   render() {
-    let [count_text, x] = this.decideCountText();
+    let count_text = this.decideCountText();
+    // console.log("x1= ", x);
     let obj = this.decideImgRender();
     var clipboard = new Clipboard(".clipboard");
     return (
@@ -141,12 +165,13 @@ class SwipeScreen extends React.Component {
             </div>
             <div className="ct-grp">
               <span>
-                Labeled {this.props.labeledSize} out of{" "}
-                {this.props.batch_size + this.props.labeledSize + 1}
+                {this.props.labeledSize} out of{" "}
+                {this.props.batch_size + this.props.labeledSize + 1} images
+                labelled
               </span>
               <br></br>
               <span>{count_text}</span>
-              {console.log("x= ", x)}
+              {/* {console.log("x1= ", x)} */}
               <br></br>
             </div>
             <div className="button-grp">
@@ -174,8 +199,13 @@ class SwipeScreen extends React.Component {
         </div>
         <div id="#SwipeScreen" className="Content">
           <div className="Image_wrapper">
-            <div className="prog-bar">
-              <ProgressBar intent="success" value={x}></ProgressBar>
+            <div className={this.props.displayProg}>
+              <ProgressBar
+                intent="success"
+                value={this.props.progWidth}
+                // value={0.6}
+                animate={false}
+              ></ProgressBar>
             </div>
             {obj}
           </div>
@@ -184,7 +214,7 @@ class SwipeScreen extends React.Component {
             <Button
               icon="remove"
               className="AcceptRejectButton"
-              intent="danger"
+              intent="primary"
               onClick={this.props.onSkipClick}
             >
               Skip
@@ -193,14 +223,17 @@ class SwipeScreen extends React.Component {
               icon="tick"
               className="AcceptRejectButton"
               intent="success"
-              onClick={this.props.onAcceptClick}
+              onClick={() => {
+                // this.decideCountText();
+                this.props.onAcceptClick();
+              }}
             >
               Accept
             </Button>
             <Button
               icon="small-cross"
               className="AcceptRejectButton"
-              intent="primary"
+              intent="danger"
               onClick={this.props.onRejectClick}
             >
               Reject
@@ -208,7 +241,8 @@ class SwipeScreen extends React.Component {
             <Button
               icon="undo"
               disabled={this.props.undoHappened}
-              className="BackButton"
+              // className="BackButton"
+              className="AcceptRejectButton"
               onClick={this.props.onBackClick}
             >
               Undo

@@ -19,9 +19,6 @@ body {
   text-align: center;
 }
 
-.Content {
-}
-
 .Image_wrapper {
   width: fit-content;
   margin: auto;
@@ -54,6 +51,11 @@ body {
 .prog-bar {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+  /* display: none; */
+}
+
+.prg-bar {
+  display: none;
 }
 
 .timer {
@@ -99,6 +101,12 @@ img {
   margin-top: 5px;
 }
 
+.AcceptRejectButton {
+  margin: 20px;
+  width: 90px;
+  height: 35px;
+}
+
 @media (max-width: 640px) {
   img {
     max-width: 90vw;
@@ -110,17 +118,19 @@ img {
     flex: 1;
     margin: 0 auto;
   }
-  .footer {
-    margin-top: 10vh;
+  .AcceptRejectButton {
+    margin: 10px;
+    width: 100px;
+    height: 40px;
   }
-}
-
-.AcceptRejectButton {
-  margin: 20px;
+  /* .footer {
+    margin-top: 10vh;
+  } */
 }
 
 .EndScreenButton {
   margin: 8px auto;
+  width: 180px;
 }
 
 .endscreen-btn-grp {
@@ -130,15 +140,16 @@ img {
   justify-content: center;
   align-items: center;
 }
-.TutorialScreen_Question_Image {
-  height: 500px;
-  background-size: cover;
-}
 
-.TutorialScreen_Question_Image_Text {
-  padding: 300px 15% 0 15%;
-  color: white;
-  text-shadow: 1px 1px 10px black;
+.hover-text {
+  border: 2px solid black;
+  display: none;
+}
+.end-btn1:hover + .hover-text {
+  display: block;
+  background-color: antiquewhite;
+  font-size: 1.2rem;
+  color: black;
 }
 
 .EndScreen {
@@ -164,11 +175,77 @@ img {
   text-shadow: 1px 1px 2px black;
 }
 
+.TutorialScreen_Question_Image_Text {
+  /* height: 150px;
+  width: 800px;
+  padding: 300px 15% 0 15%; */
+  /*original colours
+  color: white;
+  text-shadow: 1px 1px 10px black;
+  */
+  box-sizing: border-box;
+  margin-top: 40px;
+  color: rgb(44, 33, 202);
+  /* text-shadow: 2px 2px 2px rgb(16 26 25 / 51%); */
+}
+
 .TutorialScreen_Question_Image_Text_Title {
+  margin: 3px;
   font-size: 2rem;
   font-weight: bold;
 }
 
 .TutorialScreen_Question_Image_Text_Caption {
   font-size: 1.3rem;
+  margin: 3px;
+}
+
+@media (max-width: 650px) {
+  .Tutorial_Image_wrapper {
+    margin-top: 0px;
+  }
+  .TutorialScreen_Question_Image_Text_Title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .TutorialScreen_Question_Image_Text_Caption {
+    font-size: 1rem;
+  }
+
+  .TutorialScreen_Question_Image {
+    /* height: 500px; */
+    /* width: fit-content; */
+    height: 500px;
+    background-size: cover;
+  }
+}
+
+.Tutorial_Image_wrapper {
+  /* display: block; */
+  margin: auto;
+  margin-top: 5px;
+  width: fit-content;
+  /* border: 2px solid brown; */
+}
+
+.Question_Image {
+  /* max-width: 50vw;
+  max-height: 60vh; */
+  max-width: 70vw;
+  max-height: 60vh;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+}
+
+.tut-helper-text {
+  margin: 5px auto;
+  color: rgb(44, 33, 202);
+  font-weight: bold;
+}
+
+.tut-helper-gifs {
+  width: 100px;
+  height: 100px;
 }

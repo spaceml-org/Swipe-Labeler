@@ -1,15 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "../styles.css";
 import moon from "../tutorial-images/moon.jpg";
 import flag from "../tutorial-images/flag.jpg";
 import earthrise from "../tutorial-images/earthrise.jpg";
-import astronaut from "../tutorial-images/astronaut.jpg";
 import TinderCard from "react-tinder-card";
-import Timer from "./timer";
-import { Button, ProgressBar } from "@blueprintjs/core";
+import { Button } from "@blueprintjs/core";
 import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
+import { TutorialHelper } from "./tutorialhelper";
 
 class TutorialScreen extends React.Component {
   constructor(props) {
@@ -22,12 +21,15 @@ class TutorialScreen extends React.Component {
         {
           title: "Welcome to the Swipe Labeler tool.",
           caption:
-            'You can label images in three ways. First click "Accept", "Reject" or "Skip" to continue.',
+            'You can label images in three ways. First try clicking "Accept", "Reject" or "Skip".',
         },
-        { caption: "Now try swiping the image left,right, or downwards!." },
         {
+          title: "You can also label images by swiping !",
+        },
+        {
+          title: "Now try a keyboard shortcut!",
           caption:
-            "Now try a keyboard shortcut. Press your arrow left key,arrow right key, or your arrow down key on your keybord.",
+            "Press your arrow left key,arrow right key, or your arrow down key on your keybord.",
         },
       ],
     };
@@ -37,6 +39,7 @@ class TutorialScreen extends React.Component {
     this.onTutorialSkipClick = this.onTutorialSkipClick.bind(this);
     this.onTutorialSwipe = this.onTutorialSwipe.bind(this);
     this.onTutorialKeyPress = this.onTutorialKeyPress.bind(this);
+    this.decideRender = this.decideRender.bind(this);
   }
 
   componentWillMount() {
@@ -108,37 +111,22 @@ class TutorialScreen extends React.Component {
     }
   };
 
-  render() {
-    var message = this.state.tutorialMessages[this.state.tutorialIndex];
-    return (
-      <div className="TutorialScreen">
-        <div className="Question">
-          <div className="Image_wrapper">
-            <TinderCard
-              onSwipe={this.onTutorialSwipe}
-              preventSwipe={["right", "left", "down"]}
-            >
-              <div
-                className="TutorialScreen_Question_Image"
-                style={{
-                  backgroundImage:
-                    "url('" +
-                    this.state.tutorialImages[this.state.tutorialIndex] +
-                    "')",
-                }}
-              >
-                <div className="TutorialScreen_Question_Image_Text">
-                  <div className="TutorialScreen_Question_Image_Text_Title">
-                    {message.title}
-                  </div>
-                  <div className="TutorialScreen_Question_Image_Text_Caption">
-                    {message.caption}
-                  </div>
-                </div>
-              </div>
-            </TinderCard>
-          </div>
-
+  decideRender() {
+    let obj;
+    if (this.state.tutorialIndex === 0 || this.state.tutorialIndex === 2) {
+      console.log("reached!");
+      obj = (
+        <div className="Tutorial_Image_wrapper">
+          <TinderCard
+            onSwipe={this.onTutorialSwipe}
+            preventSwipe={["right", "left", "down"]}
+          >
+            <img
+              className={"Question_Image"}
+              src={this.state.tutorialImages[this.state.tutorialIndex]}
+              alt=""
+            />
+          </TinderCard>
           <Button
             icon="small-cross"
             className="AcceptRejectButton"
@@ -165,6 +153,38 @@ class TutorialScreen extends React.Component {
           >
             Accept
           </Button>
+        </div>
+      );
+    } else
+      obj = (
+        <div>
+          <TutorialHelper />
+          <Button
+            style={{ marginTop: "15px" }}
+            intent="success"
+            onClick={this.onTutorialAcceptClick}
+          >
+            Next Section
+          </Button>
+        </div>
+      );
+    return obj;
+  }
+  render() {
+    var message = this.state.tutorialMessages[this.state.tutorialIndex];
+    let obj = this.decideRender();
+    return (
+      <div className="TutorialScreen">
+        <div className="Question">
+          <div className="TutorialScreen_Question_Image_Text">
+            <div className="TutorialScreen_Question_Image_Text_Title">
+              {message.title}
+            </div>
+            <div className="TutorialScreen_Question_Image_Text_Caption">
+              {message.caption}
+            </div>
+          </div>
+          {obj}
         </div>
       </div>
     );

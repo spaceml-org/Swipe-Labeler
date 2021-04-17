@@ -60,52 +60,39 @@ def create_app(batch_size, path_for_unlabeled):
         if not os.path.exists(path_for_unsure):
             os.mkdir(path_for_unsure)
 
-        # # Make the positive label folder
-        # if os.path.exists(path_for_pos):
-        #     shutil.rmtree(path_for_pos)
-        #     time.sleep(0.2)
-        # os.mkdir(path_for_pos)
-        # # Make the negative label folder
-        # if os.path.exists(path_for_neg):
-        #     shutil.rmtree(path_for_neg)
-        #     time.sleep(0.2)
-        # os.mkdir(path_for_neg)
-        # # Make the unsure label folder
-        # if os.path.exists(path_for_unsure):
-        #     shutil.rmtree(path_for_unsure)
-        #     time.sleep(0.2)
-        # os.mkdir(path_for_unsure)
-
     #default case incase user doesnt provide argument paths for labelling folders
     else:
         # Define Labeled folder to be at the same level as path_for_unlabeled
         labeled_folder = os.path.join(str(parent_directory), 'Labeled')
         # Make the (parent_directory)/Labeled folder if it doesn't exist already.
-        if os.path.exists(labeled_folder):
-            shutil.rmtree(labeled_folder)
+        if not os.path.exists(labeled_folder):
             time.sleep(0.2)
-        os.mkdir(labeled_folder)
+            os.mkdir(labeled_folder)
+        #     shutil.rmtree(labeled_folder)
+        #     time.sleep(0.2)
+        # os.mkdir(labeled_folder)
 
         # Create parent_directory/Labeled/Labeled_Positive folder if it doesn't already exist.
         labeled_positive = os.path.join(labeled_folder, 'Labeled_Positive')
-        if os.path.exists(labeled_positive):
-            shutil.rmtree(labeled_positive)
+        if not os.path.exists(labeled_positive):
             time.sleep(0.2)
-        os.mkdir(labeled_positive)
+            os.mkdir(labeled_positive)
+            # shutil.rmtree(labeled_positive)
+            # time.sleep(0.2)
 
         # # Create swipe_labeler_data/labeled_positive folder if it doesn't already exist.
         labeled_negative = os.path.join(labeled_folder, 'Labeled_Negative')
-        if os.path.exists(labeled_negative):
-            shutil.rmtree(labeled_negative)
+        if not os.path.exists(labeled_negative):
             time.sleep(0.2)
-        os.mkdir(labeled_negative)
+            os.mkdir(labeled_negative)
+            # shutil.rmtree(labeled_negative)
+            # time.sleep(0.2)
 
         # # Create swipe_labeler_data/labeled_positive folder if it doesn't already exist.
         unsure = os.path.join(labeled_folder, 'Unsure')
-        if os.path.exists(unsure):
-           shutil.rmtree(unsure)
+        if not os.path.exists(unsure):
            time.sleep(0.2)
-        os.mkdir(unsure)
+           os.mkdir(unsure)
 
     return app
 
@@ -180,6 +167,8 @@ def give_size():
         labeled_negative_size = len( [name for name in os.listdir(labeled_negative)])
         unsure_size = len( [name for name in os.listdir(unsure)])
         labeled_size = labeled_negative_size + labeled_positive_size + unsure_size
+
+    # batch_size = min(app.config["batch_size"],size)
 
     return {"batch_size":size,"batch_stop":batch_size,"labeled_size":labeled_size}
 
@@ -355,7 +344,7 @@ def quit_app():
 @app.route('/refresh',methods=['POST'])
 def refresh_handler():
     msg1 = None
-    # Transfer the request image from temp to unlabeled folder
+    # Transfer the requested image from temp to unlabeled folder
     image_url = request.get_json()['image_url']
     curr_image_url = request.get_json()['curr_image_url']
     if( not image_url and curr_image_url == "none"):
