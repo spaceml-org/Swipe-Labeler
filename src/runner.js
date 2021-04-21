@@ -4,6 +4,7 @@ import { Button } from "@blueprintjs/core";
 import { SwipeScreen } from "./components/swipescreen";
 import { TutorialScreen } from "./components/tutorialscreen";
 import { EndScreen } from "./components/endscreen";
+import { Welcome } from "./components/welcomescreen";
 import "normalize.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
@@ -25,7 +26,8 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      view: hasSeenTutorial() ? "active" : "tutorial",
+      view: hasSeenTutorial() ? "active" : "welcome",
+      // view: "welcome",
       index: 0,
       image: null,
       total_batch_size: null,
@@ -51,6 +53,8 @@ export default class App extends React.Component {
     this.onBackClick = this.onBackClick.bind(this);
     this.onQuitClick = this.onQuitClick.bind(this);
     this.endTutorial = this.endTutorial.bind(this);
+    this.startTutorial = this.startTutorial.bind(this);
+    this.startLabel = this.startLabel.bind(this);
     this.setLoading = this.setLoading.bind(this);
     this.getBatchSize = this.getBatchSize.bind(this);
     this.decideProgWidth = this.decideProgWidth.bind(this);
@@ -237,6 +241,7 @@ export default class App extends React.Component {
       );
     }
   }
+
   onAcceptClick() {
     // Send the positive label to flask, make call to /image to get the next image from flask
     // and update the index so the next image will show.
@@ -363,6 +368,19 @@ export default class App extends React.Component {
       .catch((err) => console.log("ERROR: ", err));
   }
 
+  startTutorial() {
+    console.log("hello world from start");
+    this.setState({
+      view: "tutorial",
+    });
+  }
+
+  startLabel() {
+    this.setState({
+      view: "active",
+    });
+  }
+
   endTutorial() {
     this.setState({
       view: "active",
@@ -388,7 +406,14 @@ export default class App extends React.Component {
     } else {
       displayProg = "prog-bar";
     }
-    if (this.state.view === "tutorial")
+    if (this.state.view === "welcome")
+      body = (
+        <Welcome
+          startTutorial={this.startTutorial}
+          startLabel={this.startLabel}
+        />
+      );
+    else if (this.state.view === "tutorial")
       body = <TutorialScreen end={this.endTutorial} />;
     else if (this.state.view === "active")
       body = this.state.image ? (

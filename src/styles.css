@@ -19,6 +19,85 @@ body {
   text-align: center;
 }
 
+.welcome-wrapper {
+  /* background-image: url("D:\projects\Swipe-Labeler\src\welcome.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover; */
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.welcome-text {
+  width: 50vw;
+}
+
+.welcome-text h1 {
+  color: black;
+  font-family: "Raleway", sans-serif;
+  font-size: 52px;
+  font-weight: 600;
+  line-height: 72px;
+  margin: 0 0 24px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.welcome-text p {
+  color: black;
+  font-family: "Raleway", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 32px;
+  margin: 0 0 24px;
+}
+
+@media (max-width: 865px) {
+  .welcome-text h1 {
+    color: black;
+    font-family: "Raleway", sans-serif;
+    font-size: 32px;
+    line-height: 72px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+  .welcome-text p {
+    color: black;
+    font-family: "Raleway", sans-serif;
+    font-size: 16px;
+    line-height: 25px;
+  }
+}
+
+@media (max-width: 535px) {
+  .welcome-text h1 {
+    color: black;
+    font-family: "Raleway", sans-serif;
+    font-size: 22px;
+    line-height: 72px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+  .welcome-text p {
+    color: black;
+    font-family: "Raleway", sans-serif;
+    font-size: 15px;
+    line-height: 20px;
+  }
+}
+
+.welcome-btn-grp {
+  margin: 30px auto;
+  display: grid;
+}
+
+.welcome-btn {
+  display: inline-block;
+  margin: 5px auto;
+  width: 110px;
+}
+
 .Image_wrapper {
   width: fit-content;
   margin: auto;
