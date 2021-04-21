@@ -76,7 +76,7 @@ class SwipeScreen extends React.Component {
       text = "Last Image!";
       return text;
     }
-    if (y !== 1) text = y + " images left in batch !";
+    if (y !== 1) text = y + " images left in batch!";
     else text = y + " image left in batch!";
 
     return text;
@@ -164,13 +164,13 @@ class SwipeScreen extends React.Component {
               <Timer />
             </div>
             <div className="ct-grp">
-              <span>
+              <span className="ct-grp-upper-text">{count_text}</span>
+              <br></br>
+              <span className="ct-grp-lower-text">
                 {this.props.labeledSize} out of{" "}
                 {this.props.batch_size + this.props.labeledSize + 1} images
                 labelled
               </span>
-              <br></br>
-              <span>{count_text}</span>
               {/* {console.log("x1= ", x)} */}
               <br></br>
             </div>
@@ -220,6 +220,14 @@ class SwipeScreen extends React.Component {
               Skip
             </Button>
             <Button
+              icon="small-cross"
+              className="AcceptRejectButton"
+              intent="danger"
+              onClick={this.props.onRejectClick}
+            >
+              Reject
+            </Button>
+            <Button
               icon="tick"
               className="AcceptRejectButton"
               intent="success"
@@ -229,14 +237,6 @@ class SwipeScreen extends React.Component {
               }}
             >
               Accept
-            </Button>
-            <Button
-              icon="small-cross"
-              className="AcceptRejectButton"
-              intent="danger"
-              onClick={this.props.onRejectClick}
-            >
-              Reject
             </Button>
             <Button
               icon="undo"

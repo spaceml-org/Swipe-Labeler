@@ -14,18 +14,11 @@ class EndScreen extends React.Component {
     //bind functions
     this.decideContinue = this.decideContinue.bind(this);
   }
-  // componentDidMount() {
-  //   console.log("helo mounter!");
-  //   var customWindow = window.open("", "_parent", "");
-  // }
+
   sendClose() {
     console.log("sendClose!!!!@!!!");
-    // var customWindow = window.open("", "_blank", "");
-    // var customWindow = window.open("", "_self", "");
-    // var customWindow = window.open("", "_parent", "");
     window.open("", "_parent", "");
     window.close();
-    // customWindow.close();
   }
 
   sendShutDown() {
@@ -147,7 +140,7 @@ class EndScreen extends React.Component {
           <div className="endscreen-btn-grp">
             {obj}
 
-            <Button
+            {/* <Button
               id="end-btn"
               icon="small-cross"
               className="EndScreenButton"
@@ -155,7 +148,7 @@ class EndScreen extends React.Component {
               onClick={this.sendClose}
             >
               Close App
-            </Button>
+            </Button> */}
             {warning}
           </div>
         </div>

@@ -47,6 +47,13 @@ body {
   display: inline-block;
   padding: 2.5px;
 }
+.ct-grp-upper-text {
+  font-size: larger;
+  font-weight: bolder;
+}
+.ct-grp-lower-text {
+  font-size: large;
+}
 
 .prog-bar {
   margin-top: 0.5rem;
@@ -198,6 +205,13 @@ img {
 .TutorialScreen_Question_Image_Text_Caption {
   font-size: 1.3rem;
   margin: 3px;
+}
+
+.Tutorial_Zoom_Text {
+  position: relative;
+  left: 0px;
+  /* margin-top: 0px;
+  margin-left: 0px; */
 }
 
 @media (max-width: 650px) {
