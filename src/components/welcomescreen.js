@@ -24,12 +24,14 @@ class Welcome extends React.Component {
             <Button
               intent="warning"
               className="welcome-btn"
+              large={true}
               onClick={this.props.startTutorial}
             >
               Tutorial
             </Button>
             <Button
               intent="warning"
+              large={true}
               className="welcome-btn"
               onClick={this.props.startLabel}
             >

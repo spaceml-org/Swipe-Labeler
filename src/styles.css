@@ -95,7 +95,7 @@ body {
 .welcome-btn {
   display: inline-block;
   margin: 5px auto;
-  width: 110px;
+  /* width: 110px; */
 }
 
 .Image_wrapper {
