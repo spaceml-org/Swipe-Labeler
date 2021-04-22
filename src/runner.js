@@ -18,6 +18,7 @@ function hasSeenTutorial() {
 }
 
 function setTutorialSeen() {
+  console.log("tutorial will be set to seen!");
   document.cookie = "hasSeenTutorial=true";
 }
 
@@ -442,8 +443,12 @@ export default class App extends React.Component {
       );
     else if (this.state.view === "end") {
       // body = <EndScreen continue={toContinue} />;
-      if (this.state.batch_size - 1 <= 0) body = <EndScreen />;
-      else body = <EndScreen continue={toContinue} />;
+      if (this.state.batch_size - 1 <= 0)
+        body = <EndScreen setTutorialSeen={setTutorialSeen} />;
+      else
+        body = (
+          <EndScreen continue={toContinue} setTutorialSeen={setTutorialSeen} />
+        );
     }
     return <div className="App">{body}</div>;
   }

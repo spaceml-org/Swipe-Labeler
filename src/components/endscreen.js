@@ -122,6 +122,7 @@ class EndScreen extends React.Component {
     return warning;
   }
   render() {
+    this.props.setTutorialSeen();
     let obj = this.decideContinue();
     let warning = this.decideWarning();
     return (
