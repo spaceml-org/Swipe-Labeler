@@ -167,9 +167,8 @@ class SwipeScreen extends React.Component {
               <span className="ct-grp-upper-text">{count_text}</span>
               <br></br>
               <span className="ct-grp-lower-text">
-                {this.props.labeledSize} out of{" "}
-                {this.props.batch_size + this.props.labeledSize + 1} images
-                labelled
+                {this.props.labeledSize} out of {this.props.total_batch_size}{" "}
+                images labelled
               </span>
               {/* {console.log("x1= ", x)} */}
               <br></br>
@@ -212,7 +211,7 @@ class SwipeScreen extends React.Component {
           <div className="footer">
             <input type="text" id="blank" value={window.location.href} />
             <Button
-              icon="remove"
+              icon="arrow-down"
               className="AcceptRejectButton"
               intent="primary"
               onClick={this.props.onSkipClick}
@@ -220,7 +219,7 @@ class SwipeScreen extends React.Component {
               Skip
             </Button>
             <Button
-              icon="small-cross"
+              icon="arrow-left"
               className="AcceptRejectButton"
               intent="danger"
               onClick={this.props.onRejectClick}
@@ -228,11 +227,10 @@ class SwipeScreen extends React.Component {
               Reject
             </Button>
             <Button
-              icon="tick"
+              rightIcon="arrow-right"
               className="AcceptRejectButton"
               intent="success"
               onClick={() => {
-                // this.decideCountText();
                 this.props.onAcceptClick();
               }}
             >
