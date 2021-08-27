@@ -127,11 +127,10 @@ You can use other methods, but the instructions above are written using pip. You
 Please cite us if you use our code.
 
 ```
-@article{,
-  title={},
+@code{
+  title={Swipe-Labeler},
   author={},
-  url={},
-  year={},
-  publisher={}
+  url={https://github.com/spaceml-org/Swipe-Labeler/},
+  year={2021}
 }
 ```
