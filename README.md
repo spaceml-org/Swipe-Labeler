@@ -3,6 +3,8 @@
 **Swipe Labeler is a Graphical User Interface based tool that allows rapid labeling of image data.**
 
 ![](https://github.com/spaceml-org/Swipe-Labeler/blob/main/Swipe-Labeler-Demo.gif)
+
+[![Google Colab Notebook Example](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/spaceml-org/Swipe-Labeler/blob/main/Swipe_Labeller_Demo.ipynb)
     
 Images will be picked one by one from your unlabeled images directory, and presented through the Swipe Labeler GUI. For each image, the user can choose to classify the image as a positive or negative/absent class using the “Accept” or “Reject” button.
 
@@ -127,11 +129,10 @@ You can use other methods, but the instructions above are written using pip. You
 Please cite us if you use our code.
 
 ```
-@article{,
-  title={},
+@code{
+  title={Swipe-Labeler},
   author={},
-  url={},
-  year={},
-  publisher={}
+  url={https://github.com/spaceml-org/Swipe-Labeler/},
+  year={2021}
 }
 ```
