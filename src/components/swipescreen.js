@@ -166,11 +166,10 @@ class SwipeScreen extends React.Component {
             <div className="ct-grp">
               <span className="ct-grp-upper-text">{count_text}</span>
               <br></br>
-              <span className="ct-grp-lower-text">
+              {/* <span className="ct-grp-lower-text">
                 {this.props.labeledSize} out of {this.props.total_batch_size}{" "}
                 images labelled
-              </span>
-              {/* {console.log("x1= ", x)} */}
+              </span> */}
               <br></br>
             </div>
             <div className="button-grp">

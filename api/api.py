@@ -379,4 +379,4 @@ def end_app():
     return {'status': 'success'}
 
 
-app.run(host='0.0.0.0')
+app.run(host='0.0.0.0',port=int('8080'))
