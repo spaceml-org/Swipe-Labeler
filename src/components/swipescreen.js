@@ -170,6 +170,7 @@ class SwipeScreen extends React.Component {
                 {this.props.labeledSize} out of {this.props.total_batch_size}{" "}
                 images labelled
               </span> */}
+
               <br></br>
             </div>
             <div className="button-grp">
